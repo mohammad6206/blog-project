@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+
+<!-- Header Start -->
+<div class="container-fluid bg-breadcrumb">
+    <div class="container text-center py-5" style="max-width: 900px;">
+        <h3 class="text-white display-3 mb-4">{{ post.title }}</h3>
+        <ol class="breadcrumb justify-content-center mb-0">
+            <li class="breadcrumb-item"><a>Home</a></li>
+            <li class="breadcrumb-item"><a>Blog</a></li>
+            <li class="breadcrumb-item active text-white">{{ post.title }}</li>
+        </ol>
+    </div>
+</div>
+<!-- Header End -->
+
+<!-- Blog Detail Start -->
+<div class="container-fluid blog py-5">
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="blog-item">
+                    <div class="blog-img">
+                        <img src="{{ post.image.url }}" class="img-fluid w-100 rounded-top" alt="{{ post.title }}">
+                        <div class="blog-info d-flex align-items-center border border-start-0 border-end-0">
+                            <small class="flex-fill text-center border-end py-2">
+                                <i class="fa fa-calendar-alt text-primary me-2"></i>{{ post.published_date|date:"M d,Y"}}
+                            </small>
+                            <span class="flex-fill text-center border-end py-2">
+                                <i class="fa fa-eye text-primary me-2"></i>{{ post.counted_view }}
+                            </span>
+                            <span class="flex-fill text-center py-2">
+                                <i class="fa fa-comments text-primary me-2"></i>{{ post.comments.count }}
+                            </span>
+                        </div>
+                    </div>
+                    <div class="blog-content border border-top-0 rounded-bottom p-4">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <div>
+                                {% for cat in post.category.all %}
+                                {{ cat.name }}{% if not forloop.last %}, {% endif %}
+                                {% endfor %}
+                            </div>
+                            <div>
+                                Posted By: {{ post.author.get_full_name|default:post.author.username }}
+                            </div>
+                        </div>
+
+                        <h2 class="text-xl font-semibold mb-2">{{ post.title }}</h2>
+                        <p class="my-3">{{ post.content|linebreaks }}</p>
+                    </div>
+
+                    <!-- Navigation to previous and next posts -->
+                    <div class="d-flex justify-content-between mt-4">
+                        {% if previous_post %}
+                        <a href="{% url 'blog:post_detail' previous_post.id %}" class="btn btn-outline-primary">&laquo;
+                            {{ previous_post.title|truncatewords:5 }}</a>
+                        {% else %}
+                        <div></div>
+                        {% endif %}
+
+                        {% if next_post %}
+                        <a href="{% url 'blog:post_detail' next_post.id %}"
+                            class="btn btn-outline-primary">{{next_post.title|truncatewords:5 }} &raquo;</a>
+                        {% else %}
+                        <div></div>
+                        {% endif %}
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Blog Detail End -->
+
+{% endblock %}

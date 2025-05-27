@@ -1,0 +1,41 @@
+# فایل‌های سیستم و IDE
+.DS_Store
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# محیط مجازی پایتون
+venv/
+env/
+*.py[cod]
+__pycache__/
+
+# پایگاه داده SQLite (چون معمولاً در گیت نگهداری نمی‌شود)
+*.sqlite3
+*.sqlite
+
+# فایل‌های لاگ و کش
+*.log
+*.pot
+*.pyc
+*.pid
+*.cache
+
+# فایل‌های استاتیک و مدیا (اگر توسط Django جمع‌آوری می‌شوند)
+/staticfiles/
+/media/
+
+# فایل‌های محرمانه (env)
+.env
+*.env
+/secrets/
+
+# فایل‌های مربوط به نصب پکیج‌ها
+pip-selfcheck.json
+Pipfile.lock
+poetry.lock
+
+# فایل‌های تولید شده توسط Django
+db.sqlite3
+.coverage

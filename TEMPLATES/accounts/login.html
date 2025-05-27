@@ -1,0 +1,133 @@
+{% load static %}
+{% load widget_tweaks %}
+
+<link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
+
+<!-- Pills navs -->
+<ul class="nav nav-pills nav-justified mb-3" id="ex1" role="tablist">
+    <li class="nav-item" role="presentation">
+        <a class="nav-link {% if login_active %}active{% endif %}" id="tab-login" data-mdb-pill-init href="{% url 'accounts:login'%}"
+            role="tab" aria-controls="pills-login"
+            aria-selected="{% if login_active %}true{% else %}false{% endif %}">Login</a>
+    </li>
+    <li class="nav-item" role="presentation">
+        <a class="nav-link {% if not login_active %}active{% endif %}" id="tab-register" data-mdb-pill-init
+            href="{% url 'accounts:regester'%}" role="tab" aria-controls="pills-register"
+            aria-selected="{% if not login_active %}true{% else %}false{% endif %}">Register</a>
+    </li>
+</ul>
+
+<!-- Social Buttons - can be outside tabs to avoid repetition -->
+<div class="text-center mb-3">
+    <p>Signin / up with:</p>
+    <button type="button" class="btn btn-link btn-floating mx-1"><i class="fab fa-facebook-f"></i></button>
+    <button type="button" class="btn btn-link btn-floating mx-1"><i class="fab fa-google"></i></button>
+    <button type="button" class="btn btn-link btn-floating mx-1"><i class="fab fa-twitter"></i></button>
+    <button type="button" class="btn btn-link btn-floating mx-1"><i class="fab fa-github"></i></button>
+</div>
+
+<!-- Pills content -->
+<div class="tab-content">
+    <!-- Login Tab -->
+    <div class="tab-pane fade show {% if login_active %}active{% endif %}" id="pills-login" role="tabpanel"
+        aria-labelledby="tab-login">
+        <form method="POST" action="{% url 'accounts:login' %}">
+            {% csrf_token %}
+
+            {% if form.non_field_errors %}
+            <div class="alert alert-danger text-center">
+                {% for error in form.non_field_errors %}
+                {{ error }}
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            <div class="form-outline mb-4 text-center">
+                {{ form.username_or_email.errors }}
+                {{ form.username_or_email|add_class:"form-control text-center" }}
+                <label class="form-label" for="{{ form.username_or_email.id_for_label }}">Email or Username</label>
+            </div>
+
+            <div class="form-outline mb-4 text-center">
+                {{ form.password.errors }}
+                {{ form.password|add_class:"form-control text-center" }}
+                <label class="form-label" for="{{ form.password.id_for_label }}">Password</label>
+            </div>
+
+            <div class="row mb-4">
+                <div class="col-md-6 d-flex justify-content-center">
+                    <div class="form-check mb-3 mb-md-0">
+                        <input class="form-check-input" type="checkbox" id="loginCheck" name="remember" checked />
+                        <label class="form-check-label" for="loginCheck"> Remember me </label>
+                    </div>
+                </div>
+                <div class="col-md-6 d-flex justify-content-center">
+                    <a href="{% url 'accounts:password_reset' %}">Forgot password?</a>
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-block mb-4">Sign in</button>
+
+            <div class="text-center">
+                <p>Not a member? <a href="{% url 'accounts:regester' %}">Register</a></p>
+            </div>
+        </form>
+    </div>
+
+    <!-- Register Tab -->
+    <div class="tab-pane fade {% if not login_active %}show active{% endif %}" id="pills-register" role="tabpanel"
+        aria-labelledby="tab-register">
+        <form method="POST" action="{% url 'accounts:regester' %}">
+            {% csrf_token %}
+
+            <!-- بهتر است فرم ثبت‌نام هم از فرم Django رندر شود، فرض می‌کنیم فرم ثبت‌نام با نام 'register_form' به قالب ارسال شده -->
+
+            {% if register_form.non_field_errors %}
+            <div class="alert alert-danger text-center">
+                {% for error in register_form.non_field_errors %}
+                {{ error }}
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            <div class="form-outline mb-4">
+                {{ register_form.name.errors }}
+                {{ register_form.name|add_class:"form-control" }}
+                <label class="form-label" for="{{ register_form.name.id_for_label }}">Name</label>
+            </div>
+
+            <div class="form-outline mb-4">
+                {{ register_form.username.errors }}
+                {{ register_form.username|add_class:"form-control" }}
+                <label class="form-label" for="{{ register_form.username.id_for_label }}">Username</label>
+            </div>
+
+            <div class="form-outline mb-4">
+                {{ register_form.email.errors }}
+                {{ register_form.email|add_class:"form-control" }}
+                <label class="form-label" for="{{ register_form.email.id_for_label }}">Email</label>
+            </div>
+
+            <div class="form-outline mb-4">
+                {{ register_form.password1.errors }}
+                {{ register_form.password1|add_class:"form-control" }}
+                <label class="form-label" for="{{ register_form.password1.id_for_label }}">Password</label>
+            </div>
+
+            <div class="form-outline mb-4">
+                {{ register_form.password2.errors }}
+                {{ register_form.password2|add_class:"form-control" }}
+                <label class="form-label" for="{{ register_form.password2.id_for_label }}">Repeat password</label>
+            </div>
+
+            <div class="form-check d-flex justify-content-center mb-4">
+                <input class="form-check-input me-2" type="checkbox" id="registerCheck" name="terms" checked />
+                <label class="form-check-label" for="registerCheck">
+                    I have read and agree to the terms
+                </label>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-block mb-3">Sign up</button>
+        </form>
+    </div>
+</div>
