@@ -1,6 +1,6 @@
 # admin.py
 from django.contrib import admin
-from blog.models import Post, Category
+from blog.models import Post,Category,pakages
 
 @admin.register(Post)
 class PostAdmin(admin.ModelAdmin):
@@ -16,3 +16,13 @@ class PostAdmin(admin.ModelAdmin):
 class CategoryAdmin(admin.ModelAdmin):
     list_display = ('name',)
     search_fields = ('name',)
+    
+
+@admin.register(pakages)
+class pakagesAdmin(admin.ModelAdmin):
+    list_display = ('name', 'description', 'hotel', 'hotel_stars', 'max_count', 'price', 'Number_of_nights', 'location')
+    search_fields = ('name', 'description', 'hotel', 'location')
+    list_filter = ('hotel_stars', 'max_count', 'price', 'Number_of_nights', 'location')
+    ordering = ('name',)
+
+

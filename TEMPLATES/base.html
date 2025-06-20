@@ -130,13 +130,13 @@
                 </div>
                 <div class="col-md-6 col-lg-6 col-xl-3">
                     <div class="footer-item d-flex flex-column">
-                        <h4 class="mb-4 text-white">Company</h4>
-                        <a href=""><i class="fas fa-angle-right me-2"></i> About</a>
-                        <a href=""><i class="fas fa-angle-right me-2"></i> Careers</a>
-                        <a href=""><i class="fas fa-angle-right me-2"></i> Blog</a>
-                        <a href=""><i class="fas fa-angle-right me-2"></i> Press</a>
-                        <a href=""><i class="fas fa-angle-right me-2"></i> Gift Cards</a>
-                        <a href=""><i class="fas fa-angle-right me-2"></i> Magazine</a>
+                        <h4 class="mb-4 text-white">Menu</h4>
+                        <a href="{% url 'blog:index' %}" class="nav-item nav-link active">Home</a>
+                        <a href="{% url 'blog:about' %}" class="nav-item nav-link">About</a>
+                        <a href="{% url 'blog:services' %}" class="nav-item nav-link">Services</a>
+                        <a href="{% url 'blog:packages' %}" class="nav-item nav-link">Packages</a>
+                        <a href="{% url 'blog:blog' %}" class="nav-item nav-link">Blog</a>
+                        <a href="{% url 'blog:contact' %}" class="nav-item nav-link">Contact</a>
                     </div>
                 </div>
                 <div class="col-md-6 col-lg-6 col-xl-3">
@@ -151,7 +151,7 @@
                     <div class="footer-item d-flex flex-column">
                         <h4 class="mb-4 text-white">Newsletter</h4>
                         <p>Dolor amet sit justo amet elitr clita ipsum elitr est.</p>
-                        
+
                     </div>
                 </div>
             </div>

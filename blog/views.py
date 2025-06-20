@@ -2,18 +2,19 @@ from django.http import HttpResponse
 from django.contrib import messages
 from blog.forms import ContactMessageForm
 from django.shortcuts import render, get_object_or_404, redirect
-from blog.models import Post,ContactMessage
+from blog.models import Post,ContactMessage,pakages
 from django.utils import timezone
-from django.contrib.auth.decorators import login_required
 
 
 def index_View(request):
     posts = Post.objects.filter(published_date__lte=timezone.now(), status=True).order_by('-published_date')[:3]
+    packages=pakages.objects.filter(status=True).order_by('-price')
 
     recent_messages = ContactMessage.objects.order_by('-id')[:5]
 
     context = {
         'posts': posts,
+        'packages': packages,
         'recent_messages': recent_messages,
     }
     return render(request, 'index.html', context)
@@ -109,7 +110,11 @@ def contact_view(request):
 
 def packages_View(request):
 
-    return render(request, 'packages.html')
+    packages=pakages.objects.filter(status=True).order_by('-price')
+
+    return render(request, 'packages.html',{'packages': packages})
+
+
 
 def services_View(request):
 
@@ -117,6 +122,12 @@ def services_View(request):
 
 
 
+def package_detail(request, id):
+    package = get_object_or_404(pakages, id=id)
+    context = {
+        'package': package,
+    }
+    return render(request, 'package_detail.html', context)
 
 
 

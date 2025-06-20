@@ -30,103 +30,121 @@
         dots: true,
         loop: true,
         margin: 25,
-        nav : false,
-        navText : [
+        nav: false,
+        navText: [
             '<i class="bi bi-arrow-left"></i>',
             '<i class="bi bi-arrow-right"></i>'
         ],
         responsiveClass: true,
         responsive: {
-            0:{
-                items:1
+            0: {
+                items: 1
             },
-            768:{
-                items:2
+            768: {
+                items: 2
             },
-            992:{
-                items:2
+            992: {
+                items: 2
             },
-            1200:{
-                items:3
+            1200: {
+                items: 3
             }
         }
     });
 
 
-    // packages carousel
-    $(".packages-carousel").owlCarousel({
-        autoplay: true,
-        smartSpeed: 1000,
-        center: false,
-        dots: false,
-        loop: true,
-        margin: 25,
-        nav : true,
-        navText : [
-            '<i class="bi bi-arrow-left"></i>',
-            '<i class="bi bi-arrow-right"></i>'
-        ],
-        responsiveClass: true,
-        responsive: {
-            0:{
-                items:1
-            },
-            768:{
-                items:2
-            },
-            992:{
-                items:2
-            },
-            1200:{
-                items:3
-            }
+    $(document).ready(function () {
+        var $carousel = $(".packages-carousel");
+        var itemCount = $carousel.children().length;
+
+        // اگه تعداد آیتم‌ها کمتر از مقدار مورد نیاز برای نمایش کامل هست، loop خاموش بشه
+        var loopSetting = itemCount > 3;
+
+        // مطمئن شو کلاس‌های Owl Carousel به درستی اعمال شده‌اند
+        if (itemCount > 0) {
+            $carousel.addClass('owl-carousel owl-theme');
+
+            $carousel.owlCarousel({
+                autoplay: true,
+                smartSpeed: 1000,
+                center: false,  // center معمولاً با items:3 ترکیب خوبی نیست
+                dots: true,
+                loop: loopSetting,
+                margin: 25,
+                nav: true,
+                navText: [
+                    '<i class="bi bi-arrow-left"></i>',
+                    '<i class="bi bi-arrow-right"></i>'
+                ],
+                responsive: {
+                    0: {
+                        items: 1
+                    },
+                    576: {
+                        items: 1
+                    },
+                    768: {
+                        items: 2
+                    },
+                    992: {
+                        items: 2
+                    },
+                    1200: {
+                        items: 3
+                    }
+                }
+            });
         }
     });
 
 
     // testimonial carousel
-    $(".testimonial-carousel").owlCarousel({
-        autoplay: true,
-        smartSpeed: 1000,
-        center: true,
-        dots: true,
-        loop: true,
-        margin: 25,
-        nav : true,
-        navText : [
-            '<i class="bi bi-arrow-left"></i>',
-            '<i class="bi bi-arrow-right"></i>'
-        ],
-        responsiveClass: true,
-        responsive: {
-            0:{
-                items:1
-            },
-            768:{
-                items:2
-            },
-            992:{
-                items:2
-            },
-            1200:{
-                items:3
+    $(document).ready(function () {
+        const shouldLoop = totalMessages >= 10;
+
+        $(".testimonial-carousel").owlCarousel({
+            autoplay: true,
+            smartSpeed: 1000,
+            center: true,
+            dots: true,
+            loop: shouldLoop,
+            margin: 25,
+            nav: true,
+            navText: [
+                '<i class="bi bi-arrow-left"></i>',
+                '<i class="bi bi-arrow-right"></i>'
+            ],
+            responsiveClass: true,
+            responsive: {
+                0: {
+                    items: 1
+                },
+                768: {
+                    items: 2
+                },
+                992: {
+                    items: 2
+                },
+                1200: {
+                    items: 3
+                }
             }
-        }
+        });
     });
 
-    
-   // Back to top button
-   $(window).scroll(function () {
-    if ($(this).scrollTop() > 300) {
-        $('.back-to-top').fadeIn('slow');
-    } else {
-        $('.back-to-top').fadeOut('slow');
-    }
+
+    // Back to top button
+    $(window).scroll(function () {
+        if ($(this).scrollTop() > 300) {
+            $('.back-to-top').fadeIn('slow');
+        } else {
+            $('.back-to-top').fadeOut('slow');
+        }
     });
     $('.back-to-top').click(function () {
-        $('html, body').animate({scrollTop: 0}, 1500, 'easeInOutExpo');
+        $('html, body').animate({ scrollTop: 0 }, 1500, 'easeInOutExpo');
         return false;
-    }); 
+    });
 
 })(jQuery);
 

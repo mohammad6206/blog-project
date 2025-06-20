@@ -1,14 +1,15 @@
 {% extends "base.html" %}
 {% load static %}
 {% block content %}
+
 <!-- Header Start -->
 <div class="container-fluid bg-breadcrumb">
     <div class="container text-center py-5" style="max-width: 900px;">
-        <h3 class="text-white display-3 mb-4">Travel Packages</h1>
-            <ol class="breadcrumb justify-content-center mb-0">
-                <li class="breadcrumb-item"><a>Home</a></li>
-                <li class="breadcrumb-item active text-white">Packages</li>
-            </ol>
+        <h3 class="text-white display-3 mb-4">Travel Packages</h3>
+        <ol class="breadcrumb justify-content-center mb-0">
+            <li class="breadcrumb-item"><a>Home</a></li>
+            <li class="breadcrumb-item active text-white">Packages</li>
+        </ol>
     </div>
 </div>
 <!-- Header End -->
@@ -20,155 +21,51 @@
             <h5 class="section-title px-3">Packages</h5>
             <h1 class="mb-0">Awesome Packages</h1>
         </div>
+
         <div class="packages-carousel owl-carousel">
+            {% for package in packages %}
             <div class="packages-item">
                 <div class="packages-img">
-                    <img src="img/packages-4.jpg" class="img-fluid w-100 rounded-top" alt="Image">
+                    <img src="{{ package.image.url }}" class="img-fluid w-100 rounded-top" alt="Image">
                     <div class="packages-info d-flex border border-start-0 border-end-0 position-absolute"
                         style="width: 100%; bottom: 0; left: 0; z-index: 5;">
-                        <small class="flex-fill text-center border-end py-2"><i
-                                class="fa fa-map-marker-alt me-2"></i>Venice - Italy</small>
-                        <small class="flex-fill text-center border-end py-2"><i class="fa fa-calendar-alt me-2"></i>3
-                            days</small>
-                        <small class="flex-fill text-center py-2"><i class="fa fa-user me-2"></i>2 Person</small>
+                        <small class="flex-fill text-center border-end py-2">
+                            <i class="fa fa-map-marker-alt me-2"></i>{{ package.location }}
+                        </small>
+                        <small class="flex-fill text-center border-end py-2">
+                            <i class="fa fa-calendar-alt me-2"></i>{{ package.Number_of_nights }} days
+                        </small>
+                        <small class="flex-fill text-center py-2">
+                            <i class="fa fa-user me-2"></i>{{ package.max_count }} Person
+                        </small>
                     </div>
-                    <div class="packages-price py-2 px-4">$349.00</div>
+                    <div class="packages-price py-2 px-4">${{ package.price }}</div>
                 </div>
+
                 <div class="packages-content bg-light">
                     <div class="p-4 pb-0">
-                        <h5 class="mb-0">Venice - Italy</h5>
-                        <small class="text-uppercase">Hotel Deals</small>
+                        <h5 class="mb-0">{{ package.name }}</h5>
+                        <small class="text-uppercase">{{ package.hotel }}</small>
                         <div class="mb-3">
+                            {% for _ in "12345"|slice:":package.hotel_stars" %}
                             <small class="fa fa-star text-primary"></small>
-                            <small class="fa fa-star text-primary"></small>
-                            <small class="fa fa-star text-primary"></small>
-                            <small class="fa fa-star text-primary"></small>
-                            <small class="fa fa-star text-primary"></small>
+                            {% endfor %}
                         </div>
-                        <p class="mb-4">Lorem ipsum dolor, sit amet consectetur adipisicing elit. Nesciunt nemo quia
-                            quae illum aperiam fugiat voluptatem repellat</p>
+                        <p class="mb-4">{{ package.description|truncatewords:20 }}</p>
                     </div>
                     <div class="row bg-primary rounded-bottom mx-0">
-                        <div class="col-6 text-start px-0">
-                            <a href="#" class="btn-hover btn text-white py-2 px-4">Read More</a>
-                        </div>
-                        <div class="col-6 text-end px-0">
-                            <a href="#" class="btn-hover btn text-white py-2 px-4">Book Now</a>
+                        <div class="col-12 text-center px-0">
+                            <a href="{% url 'blog:package_detail' package.id %}"
+                                class="btn-hover btn text-white py-2 px-4 d-inline-block">Read More</a>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="packages-item">
-                <div class="packages-img">
-                    <img src="img/packages-2.jpg" class="img-fluid w-100 rounded-top" alt="Image">
-                    <div class="packages-info d-flex border border-start-0 border-end-0 position-absolute"
-                        style="width: 100%; bottom: 0; left: 0; z-index: 5;">
-                        <small class="flex-fill text-center border-end py-2"><i
-                                class="fa fa-map-marker-alt me-2"></i>Venice - Italy</small>
-                        <small class="flex-fill text-center border-end py-2"><i class="fa fa-calendar-alt me-2"></i>3
-                            days</small>
-                        <small class="flex-fill text-center py-2"><i class="fa fa-user me-2"></i>2 Person</small>
-                    </div>
-                    <div class="packages-price py-2 px-4">$449.00</div>
-                </div>
-                <div class="packages-content bg-light">
-                    <div class="p-4 pb-0">
-                        <h5 class="mb-0">The New California</h5>
-                        <small class="text-uppercase">Hotel Deals</small>
-                        <div class="mb-3">
-                            <small class="fa fa-star text-primary"></small>
-                            <small class="fa fa-star text-primary"></small>
-                            <small class="fa fa-star text-primary"></small>
-                            <small class="fa fa-star text-primary"></small>
-                            <small class="fa fa-star text-primary"></small>
-                        </div>
-                        <p class="mb-4">Lorem ipsum dolor, sit amet consectetur adipisicing elit. Nesciunt nemo quia
-                            quae illum aperiam fugiat voluptatem repellat</p>
-                    </div>
-                    <div class="row bg-primary rounded-bottom mx-0">
-                        <div class="col-6 text-start px-0">
-                            <a href="#" class="btn-hover btn text-white py-2 px-4">Read More</a>
-                        </div>
-                        <div class="col-6 text-end px-0">
-                            <a href="#" class="btn-hover btn text-white py-2 px-4">Book Now</a>
-                        </div>
-                    </div>
-                </div>
+            {% empty %}
+            <div class="text-center w-100">
+                <h5 class="mb-0">No Packages Available</h5>
             </div>
-            <div class="packages-item">
-                <div class="packages-img">
-                    <img src="img/packages-3.jpg" class="img-fluid w-100 rounded-top" alt="Image">
-                    <div class="packages-info d-flex border border-start-0 border-end-0 position-absolute"
-                        style="width: 100%; bottom: 0; left: 0; z-index: 5;">
-                        <small class="flex-fill text-center border-end py-2"><i
-                                class="fa fa-map-marker-alt me-2"></i>Venice - Italy</small>
-                        <small class="flex-fill text-center border-end py-2"><i class="fa fa-calendar-alt me-2"></i>3
-                            days</small>
-                        <small class="flex-fill text-center py-2"><i class="fa fa-user me-2"></i>2 Person</small>
-                    </div>
-                    <div class="packages-price py-2 px-4">$549.00</div>
-                </div>
-                <div class="packages-content bg-light">
-                    <div class="p-4 pb-0">
-                        <h5 class="mb-0">Discover Japan</h5>
-                        <small class="text-uppercase">Hotel Deals</small>
-                        <div class="mb-3">
-                            <small class="fa fa-star text-primary"></small>
-                            <small class="fa fa-star text-primary"></small>
-                            <small class="fa fa-star text-primary"></small>
-                            <small class="fa fa-star text-primary"></small>
-                            <small class="fa fa-star text-primary"></small>
-                        </div>
-                        <p class="mb-4">Lorem ipsum dolor, sit amet consectetur adipisicing elit. Nesciunt nemo quia
-                            quae illum aperiam fugiat voluptatem repellat</p>
-                    </div>
-                    <div class="row bg-primary rounded-bottom mx-0">
-                        <div class="col-6 text-start px-0">
-                            <a href="#" class="btn-hover btn text-white py-2 px-4">Read More</a>
-                        </div>
-                        <div class="col-6 text-end px-0">
-                            <a href="#" class="btn-hover btn text-white py-2 px-4">Book Now</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="packages-item">
-                <div class="packages-img">
-                    <img src="img/packages-1.jpg" class="img-fluid w-100 rounded-top" alt="Image">
-                    <div class="packages-info d-flex border border-start-0 border-end-0 position-absolute"
-                        style="width: 100%; bottom: 0; left: 0; z-index: 5;">
-                        <small class="flex-fill text-center border-end py-2"><i
-                                class="fa fa-map-marker-alt me-2"></i>Thayland</small>
-                        <small class="flex-fill text-center border-end py-2"><i class="fa fa-calendar-alt me-2"></i>3
-                            days</small>
-                        <small class="flex-fill text-center py-2"><i class="fa fa-user me-2"></i>2 Person</small>
-                    </div>
-                    <div class="packages-price py-2 px-4">$649.00</div>
-                </div>
-                <div class="packages-content bg-light">
-                    <div class="p-4 pb-0">
-                        <h5 class="mb-0">Thayland Trip</h5>
-                        <small class="text-uppercase">Hotel Deals</small>
-                        <div class="mb-3">
-                            <small class="fa fa-star text-primary"></small>
-                            <small class="fa fa-star text-primary"></small>
-                            <small class="fa fa-star text-primary"></small>
-                            <small class="fa fa-star text-primary"></small>
-                            <small class="fa fa-star text-primary"></small>
-                        </div>
-                        <p class="mb-4">Lorem ipsum dolor, sit amet consectetur adipisicing elit. Nesciunt nemo quia
-                            quae illum aperiam fugiat voluptatem repellat</p>
-                    </div>
-                    <div class="row bg-primary rounded-bottom mx-0">
-                        <div class="col-6 text-start px-0">
-                            <a href="#" class="btn-hover btn text-white py-2 px-4">Read More</a>
-                        </div>
-                        <div class="col-6 text-end px-0">
-                            <a href="#" class="btn-hover btn text-white py-2 px-4">Book Now</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            {% endfor %}
         </div>
     </div>
 </div>
