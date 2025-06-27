@@ -25,4 +25,6 @@ class pakagesAdmin(admin.ModelAdmin):
     list_filter = ('hotel_stars', 'max_count', 'price', 'Number_of_nights', 'location')
     ordering = ('name',)
 
-
+admin.site.site_header = 'پنل مدیریتی سایت گردشگری'
+admin.site.site_title = 'مدیریت محتوا'
+admin.site.index_title ='به بخش مدیریت خوش آمدید'

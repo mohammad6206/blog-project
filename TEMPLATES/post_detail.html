@@ -43,7 +43,11 @@
                                 {% endfor %}
                             </div>
                             <div>
+                                {% if post.author %}
                                 Posted By: {{ post.author.get_full_name|default:post.author.username }}
+                                {% else %}
+                                Posted By: unknown
+                                {% endif %}
                             </div>
                         </div>
 

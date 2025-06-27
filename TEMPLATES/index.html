@@ -253,8 +253,7 @@
                         </div>
                         <div class="blog-info d-flex align-items-center border border-start-0 border-end-0">
                             <small class="flex-fill text-center border-end py-2">
-                                <i class="fa fa-calendar-alt text-primary me-2"></i>{{ post.published_date|date:"M
-                                d,Y"}}
+                                <i class="fa fa-calendar-alt text-primary me-2"></i>{{ post.published_date|date:"Md,Y"}}
                             </small>
                             <a class="btn-hover flex-fill text-center text-white border-end py-2">
                                 <i class="fa fa-thumbs-up text-primary me-2"></i>{{ post.likes.count }}
@@ -272,7 +271,7 @@
                                 {% endfor %}
                             </div>
                             <div>
-                                Posted By: {{ post.author.get_full_name|default:post.author.username }}
+                                Posted By: {{ post.author.get_full_name|default:post.author }}
                             </div>
                         </div>
 

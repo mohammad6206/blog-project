@@ -1,0 +1,285 @@
+{% extends "dashboard/base.html" %}
+{% load jformat %}
+
+{% block title %}داشبورد مدیریت {% endblock %}
+
+{% block content %}
+<h2 class="mb-4 fw-bold text-center"> داشبورد </h2>
+
+<div class="row g-4 mb-4">
+  <!-- تعداد کل پست‌ها -->
+  <div class="col-md-3">
+    <div class="card border-0 shadow-lg rounded-4">
+      <div class="card-body text-center">
+        <h6 class="text-muted">کل پست‌ها</h6>
+        <h3 class="text-primary fw-bold">{{ posts_count }}</h3>
+      </div>
+    </div>
+  </div>
+
+  <!-- تعداد کل پکیج‌ها -->
+  <div class="col-md-3">
+    <div class="card border-0 shadow-lg rounded-4">
+      <div class="card-body text-center">
+        <h6 class="text-muted">کل پکیج‌ها</h6>
+        <h3 class="text-success fw-bold">{{ pakages_count }}</h3>
+      </div>
+    </div>
+  </div>
+
+  <!-- تعداد دسته‌ها -->
+  <div class="col-md-3">
+    <div class="card border-0 shadow-lg rounded-4">
+      <div class="card-body text-center">
+        <h6 class="text-muted">تعداد دسته‌ها</h6>
+        <h3 class="text-warning fw-bold">{{ categories_count }}</h3>
+      </div>
+    </div>
+  </div>
+
+  <!-- تعداد کاربران کل -->
+  <div class="col-md-3">
+    <div class="card border-0 shadow-lg rounded-4">
+      <div class="card-body text-center">
+        <h6 class="text-muted">کل کاربران</h6>
+        <h3 class="text-danger fw-bold">{{ users_count }}</h3>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- نمودار وضعیت فعالیت کاربران -->
+<div class="row g-4 mb-4">
+  <div class="col-md-6">
+    <div class="card shadow-sm rounded-4">
+      <div class="card-body">
+        <h6 class="card-title">👥 توزیع کاربران بر اساس فعالیت (ورود)</h6>
+        <canvas id="userActivityChart" height="200"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- نمودار وضعیت پکیج‌ها -->
+  <div class="col-md-6">
+    <div class="card shadow-sm rounded-4">
+      <div class="card-body">
+        <h6 class="card-title">📦 وضعیت پکیج‌ها</h6>
+        <canvas id="packageStatusChart" height="200"></canvas>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- نمودار دسته‌بندی‌ها بر اساس تعداد پست -->
+<div class="row g-4 mb-4">
+  <div class="col-12">
+    <div class="card shadow-sm rounded-4">
+      <div class="card-body">
+        <h6 class="card-title">📂 تعداد پست‌ها در هر دسته</h6>
+        <canvas id="categoryPostsChart" height="100"></canvas>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- پست‌های برتر -->
+<div class="row g-4 mb-4">
+  <div class="col-12">
+    <div class="card shadow-sm rounded-4">
+      <div class="card-body">
+        <h6 class="card-title">⭐ ۵ پست برتر بر اساس بازدید</h6>
+        <ul class="list-group list-group-flush">
+          {% for post in top_posts %}
+          <li class="list-group-item d-flex justify-content-between align-items-center">
+            <a href="{% url 'post_detail' post.id %}" class="text-decoration-none">{{ post.title }}</a>
+            <span class="badge bg-primary rounded-pill">{{ post.counted_view }} بازدید</span>
+          </li>
+          {% empty %}
+          <li class="list-group-item">پستی وجود ندارد.</li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- نمودار انتشار ماهانه پست‌ها -->
+<div class="row g-4">
+  <div class="col-lg-8">
+    <div class="card shadow-sm rounded-4">
+      <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center mb-2 flex-wrap">
+          <h6 class="card-title mb-2 mb-md-0">📆 نمودار انتشار ماهانه پست‌ها</h6>
+
+          <div class="d-flex align-items-center gap-2 mt-4">
+            <select class="form-select form-select-sm w-auto" id="postDateFilter">
+              <option value="6months">۶ ماه اخیر</option>
+              <option value="year">سال جاری</option>
+              <option value="all">همه زمان‌ها</option>
+            </select>
+          </div>
+        </div>
+        <canvas id="postsChart" height="100"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-4">
+    <div class="card shadow-sm rounded-4">
+      <div class="card-body">
+        <h6 class="card-title">📌 وضعیت پست‌ها</h6>
+        <canvas id="statusChart" height="250"></canvas>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- کاربران بر اساس آخرین فعالیت -->
+<div class="row g-4 mt-4">
+  <div class="col-12">
+    <div class="card shadow-sm rounded-4">
+      <div class="card-body">
+        <h6 class="card-title mb-3">👤 کاربران فعال اخیر</h6>
+        <div class="table-responsive">
+          <table class="table table-bordered table-hover text-center align-middle">
+            <thead class="table-dark">
+              <tr>
+                <th>ردیف</th>
+                <th>نام کاربری</th>
+                <th>نام</th>
+                <th>نام خانوادگی</th>
+                <th>ایمیل</th>
+                <th>سطح دسترسی</th>
+                <th>آخرین ورود</th>
+                <th>تعداد ورود</th>
+                <th>تاریخ عضویت</th>
+                <th>وضعیت</th>
+                <th>IP</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for user in users_recent %}
+              <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ user.username }}</td>
+                <td>{{ user.first_name|default:"-" }}</td>
+                <td>{{ user.last_name|default:"-" }}</td>
+                <td>{{ user.email|default:"-" }}</td>
+                <td>{{ user.is_staff|yesno:"مدیر,کاربر عادی" }}</td>               
+                <td>
+                  {% if user.is_online %}
+                    <span class="badge bg-success fs-6 px-3 py-2">آنلاین</span>
+                  {% else %}
+                    {{ user.last_login|jformat:" %H:%M  %Y/%m/%d " }}
+                  {% endif %}
+                </td>
+                <td>{{ user.login_count|default:"-" }}</td>
+                <td>{{ user.date_joined|jformat:"%H:%M  %Y/%m/%d " }}</td>
+                <td>
+                  {% if user.is_active %}
+                    <span class="badge bg-primary">فعال</span>
+                  {% else %}
+                    <span class="badge bg-secondary">غیرفعال</span>
+                  {% endif %}
+                </td>
+                <td>{{ user.ip|default:"-" }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<script>
+  const userActivity = {{ user_activity_counts| safe }};
+  const packageStatus = {{ pakages_status_counts| safe }};
+  const labels = {{ chart_labels| safe }};
+  const data = {{ chart_data| safe }};
+  const statusCounts = {{ status_counts| safe }};
+  const categoryLabels = {{ category_labels| safe }};
+  const categoryPostCounts = {{ category_post_counts| safe }};
+
+  new Chart(document.getElementById('userActivityChart'), {
+    type: 'bar',
+    data: {
+      labels: Object.keys(userActivity),
+      datasets: [{
+        label: 'تعداد کاربران',
+        data: Object.values(userActivity),
+        backgroundColor: ['#0d6efd', '#20c997', '#6c757d'],
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: { legend: { display: false } },
+      scales: { y: { beginAtZero: true } }
+    }
+  });
+
+  new Chart(document.getElementById('packageStatusChart'), {
+    type: 'doughnut',
+    data: {
+      labels: Object.keys(packageStatus),
+      datasets: [{
+        label: 'وضعیت پکیج‌ها',
+        data: Object.values(packageStatus),
+        backgroundColor: ['#198754', '#dc3545'],
+      }]
+    },
+  });
+
+  new Chart(document.getElementById('categoryPostsChart'), {
+    type: 'bar',
+    data: {
+      labels: categoryLabels,
+      datasets: [{
+        label: 'تعداد پست',
+        data: categoryPostCounts,
+        backgroundColor: '#ffc107',
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: { legend: { display: false } },
+      scales: { y: { beginAtZero: true } }
+    }
+  });
+
+  new Chart(document.getElementById('postsChart'), {
+    type: 'line',
+    data: {
+      labels: labels,
+      datasets: [{
+        label: 'تعداد پست‌های منتشر شده',
+        data: data,
+        borderColor: 'rgb(54, 162, 235)',
+        tension: 0.4,
+        fill: true,
+        backgroundColor: 'rgba(54, 162, 235, 0.2)',
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: { legend: { display: true } }
+    }
+  });
+
+  new Chart(document.getElementById('statusChart'), {
+    type: 'doughnut',
+    data: {
+      labels: Object.keys(statusCounts),
+      datasets: [{
+        label: 'وضعیت پست‌ها',
+        data: Object.values(statusCounts),
+        backgroundColor: ['#198754', '#ffc107', '#dc3545'],
+      }]
+    },
+  });
+</script>
+
+
+{% endblock %}

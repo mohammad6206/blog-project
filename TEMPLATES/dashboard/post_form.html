@@ -1,0 +1,96 @@
+{% extends 'dashboard/base.html' %}
+{% block title %}{{ title }}{% endblock %}
+{% load widget_tweaks %}
+
+{% block content %}
+<div class="card shadow rounded p-4">
+    <h2 class="mb-4 text-primary">{{ title }}</h2>
+    <form method="post" enctype="multipart/form-data" id="postForm">
+        {% csrf_token %}
+
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                {{ form.title.label_tag }}  
+                {{ form.title|add_class:"form-control" }}
+            </div>
+            <div class="col-md-6 mb-3">
+                {{ form.status.label_tag }}  
+                {{ form.status|add_class:"form-check-input ms-2" }}
+            </div>
+            <div class="col-md-6 mb-3">
+                {{ form.category.label_tag }}
+                {{ form.category }}
+            </div>
+            <div class="col-md-6 mb-3">
+                {{ form.author.label_tag }}
+                {{ form.author|add_class:"form-control-plaintext" }}
+            </div>
+            <div class="col-12 mb-3">
+                {{ form.content.label_tag }}
+                {{ form.content|add_class:"form-control" }}
+            </div>
+            <div class="col-md-6 mb-3">
+                {{ form.image.label_tag }}
+                {{ form.image|add_class:"form-control" }}
+                <img id="imagePreview" src="#" class="img-fluid rounded mt-2 d-none" style="max-height: 200px;" />
+            </div>
+        </div>
+
+        <!-- تاریخ انتشار -->
+        <div id="published-date-container" class="mb-3 d-none">
+            <label>تاریخ انتشار:</label>
+            <input type="text" id="published_date_display" readonly class="form-control" />
+        </div>
+
+        <div class="d-flex gap-2">
+            <button type="submit" class="btn btn-success">ذخیره</button>
+            <a href="{% url 'post_list' %}" class="btn btn-secondary">انصراف</a>
+        </div>
+    </form>
+</div>
+
+<!-- اسکریپت وضعیت و تاریخ و عکس -->
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const statusCheckbox = document.querySelector('input[name="status"]');
+        const publishedDateContainer = document.getElementById('published-date-container');
+        const publishedDateDisplay = document.getElementById('published_date_display');
+        const imageInput = document.getElementById('id_image');
+        const imagePreview = document.getElementById('imagePreview');
+
+        function togglePublishedDate() {
+            if (statusCheckbox && statusCheckbox.checked) {
+                publishedDateContainer.classList.remove('d-none');
+                if (!publishedDateDisplay.value) {
+                    const now = new Date();
+                    const formattedDate =
+                        String(now.getHours()).padStart(2, '0') + ':' +
+                        String(now.getMinutes()).padStart(2, '0') + ' ' +
+                        now.getFullYear() + '/' +
+                        String(now.getMonth() + 1).padStart(2, '0') + '/' +
+                        String(now.getDate()).padStart(2, '0');
+                    publishedDateDisplay.value = formattedDate;
+                }
+            } else {
+                publishedDateContainer.classList.add('d-none');
+                publishedDateDisplay.value = '';
+            }
+        }
+
+        if (statusCheckbox) {
+            togglePublishedDate();
+            statusCheckbox.addEventListener('change', togglePublishedDate);
+        }
+
+        if (imageInput) {
+            imageInput.addEventListener('change', function (e) {
+                const [file] = e.target.files;
+                if (file) {
+                    imagePreview.src = URL.createObjectURL(file);
+                    imagePreview.classList.remove('d-none');
+                }
+            });
+        }
+    });
+</script>
+{% endblock %}

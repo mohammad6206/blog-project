@@ -1,0 +1,54 @@
+{% extends 'dashboard/base.html' %}
+{% load jformat %}
+
+{% block title %}مدیریت پکیج‌ها{% endblock %}
+{% block header %}پکیج‌ها{% endblock %}
+
+{% block content %}
+<a href="{% url 'packages_create' %}" class="btn btn-primary mb-3 float-end">اضافه کردن پکیج</a>
+<table class="table table-bordered table-striped">
+  <thead class="table-dark text-center">
+    <tr>
+      <th>ردیف</th>
+      <th>نام</th>
+      <th>توضیحات</th>
+      <th>وضعیت</th>
+      <th>هتل</th>
+      <th>ستاره</th>
+      <th>ظرفیت</th>
+      <td>تعداد روز های اقامت</td>
+      <th>قیمت</th>
+      <th>مکان</th>
+      <th>عملیات</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for package in packages %}
+    <tr>
+      <td>{{ forloop.counter }}</td>
+      <td>{{ package.name }}</td>
+      <td>{{ package.description|truncatechars:20 }}</td>
+      <td>
+        {% if package.status %}
+         فعال✅
+        {% else %}
+         غیرفعال❌
+        {% endif %}
+      </td>
+      <td>{{ package.hotel }}</td>
+      <td>{{ package.hotel_stars }}</td>
+      <td>{{ package.max_count }}</td>
+      <td>{{package.Number_of_nights}}</td>
+      <td>{{ package.price }}$</td>
+      <td>{{ package.location }}</td>
+      <td>
+        <div class="d-flex justify-content-center gap-2">
+          <a href="{% url 'packages_update' package.pk %}" class="btn btn-sm btn-warning">ویرایش</a>
+          <a href="{% url 'packages_delete' package.pk %}" class="btn btn-sm btn-danger">حذف</a>
+        </div>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

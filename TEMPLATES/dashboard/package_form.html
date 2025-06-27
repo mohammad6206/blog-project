@@ -1,0 +1,82 @@
+{% extends 'dashboard/base.html' %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<div class="card p-4 shadow rounded-3 bg-white">
+    <h2 class="mb-4">{{ title }}</h2>
+
+    <form method="post" enctype="multipart/form-data" novalidate>
+        {% csrf_token %}
+
+        
+        <!-- پیش‌نمایش تصویر -->
+        {% if form.image %}
+        <div class="mb-3">
+            <label class="form-label fw-bold">پیش‌نمایش تصویر:</label><br>
+            <img id="imagePreview" src="#" alt="تصویر انتخاب شده" class="img-thumbnail"
+                style="max-height: 200px; display: none;">
+        </div>
+        {% endif %}
+
+        {% for field in form %}
+        <div class="mb-3">
+            <label class="form-label fw-bold" for="{{ field.id_for_label }}">{{ field.label }}</label>
+
+            {% if field.errors %}
+            {% if field.field.widget.input_type == 'checkbox' %}
+            <div class="form-check d-flex align-items-center gap-2">
+                {{ field|add_class:"form-check-input" }} 
+                <label class="form-check-label fw-bold" for="{{ field.id_for_label }}">{{ field.label }}</label>
+            </div>
+            {% else %}
+            {{ field|add_class:"form-control" }}
+            {% endif %}
+
+            {% else %}
+            {% if field.field.widget.input_type == 'checkbox' %}
+            <div class="form-check">
+                {{ field|add_class:"form-check-input" }}
+            </div>
+            {% else %}
+            {{ field|add_class:"form-control" }}
+            {% endif %}
+            {% endif %}
+
+            {% if field.help_text %}
+            <div class="form-text">{{ field.help_text }}</div>
+            {% endif %}
+        </div>
+        {% endfor %}
+
+        <button type="submit" class="btn btn-success">ذخیره</button>
+        <a href="{% url 'package_list' %}" class="btn btn-secondary">انصراف</a>
+    </form>
+</div>
+
+<!-- اسکریپت برای پیش‌نمایش تصویر -->
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const imageInput = document.querySelector('input[type="file"][name="image"]');
+        const imagePreview = document.getElementById('imagePreview');
+
+        if (imageInput && imagePreview) {
+            imageInput.addEventListener('change', function () {
+                const file = this.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function (e) {
+                        imagePreview.src = e.target.result;
+                        imagePreview.style.display = 'block';
+                    };
+                    reader.readAsDataURL(file);
+                } else {
+                    imagePreview.style.display = 'none';
+                }
+            });
+        }
+    });
+</script>
+{% endblock %}

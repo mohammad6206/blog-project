@@ -1,0 +1,32 @@
+{% extends 'dashboard/base.html' %}
+{% load jformat %}
+
+{% block title %}مدیریت دسته‌بندی‌ها{% endblock %}
+{% block header %}دسته‌بندی‌ها{% endblock %}
+
+{% block content %}
+<a href="{% url  'categories_create' %}" class="btn btn-primary mb-3 float-end">اضافه کردن دسته بندی</a>
+<table class="table table-bordered table-striped">
+  <thead class="table-dark text-center">
+    <tr>
+      <th>ردیف</th>
+      <th>نام</th>
+      <th>عملیات</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for category in categories %}
+    <tr>
+      <td>{{ forloop.counter }}</td>
+      <td>{{ category.name }}</td>
+      <td>
+        <div class="d-flex justify-content-center gap-2">
+          <a href="{% url 'categories_update' category.pk %}" class="btn btn-sm btn-warning">ویرایش</a>
+          <a href="{% url 'categories_delete' category.pk %}" class="btn btn-sm btn-danger">حذف</a>
+        </div>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

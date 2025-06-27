@@ -1,0 +1,44 @@
+{% extends 'dashboard/base.html' %}
+{% block title %}{{ title }}{% endblock %}
+{% load widget_tweaks %}
+
+{% block content %}
+<div class="card shadow rounded p-4">
+    <h2 class="mb-4 text-primary">{{ title }}</h2>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                {{ form.username.label_tag }}
+                {{ form.username|add_class:"form-control" }}
+            </div>
+            <div class="col-md-6 mb-3">
+                {{ form.email.label_tag }}
+                {{ form.email|add_class:"form-control" }}
+            </div>
+            <div class="col-md-6 mb-3">
+                {{ form.first_name.label_tag }}
+                {{ form.first_name|add_class:"form-control" }}
+            </div>
+            <div class="col-md-6 mb-3">
+                {{ form.last_name.label_tag }}
+                {{ form.last_name|add_class:"form-control" }}
+            </div>
+            <div class="col-md-6 mb-3">
+                {{ form.password.label_tag }}
+                {{ form.password|add_class:"form-control" }}
+            </div>
+            <div class="col-md-6 mb-3 d-flex align-items-center">
+                {{ form.is_staff.label_tag }}
+                {{ form.is_staff|add_class:"form-check-input ms-2" }}
+            </div>
+        </div>
+
+        <div class="d-flex gap-2 mt-3">
+            <button type="submit" class="btn btn-success">ذخیره</button>
+            <a href="{% url 'users_list' %}" class="btn btn-secondary">انصراف</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

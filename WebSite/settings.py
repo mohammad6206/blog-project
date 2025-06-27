@@ -42,6 +42,9 @@ INSTALLED_APPS = [
     'blog',
     'accounts',
     'widget_tweaks',
+    'dashboard',
+    'django_jalali',
+
 ]
 
 MIDDLEWARE = [
@@ -120,14 +123,15 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/5.2/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'fa'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Tehran'
 
 USE_I18N = True
 
 USE_TZ = True
 
+AUTH_USER_MODEL = 'blog.CustomUser'
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
@@ -183,3 +187,10 @@ if config('USE_SSL_SETTINGS',default=False,cast=bool):
     SECURE_REFERRER_POLICY = "strict-origin"
     USE_X_FORWARDED_HOST = True
     SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+
+
+
+
+
+
+

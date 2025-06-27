@@ -1,0 +1,61 @@
+{% extends 'dashboard/base.html' %}
+{% load jformat %}
+{% block title %}مدیریت کاربران{% endblock %}
+{% block header %}کاربران{% endblock %}
+
+{% block content %}
+<a href="{% url 'users_create' %}" class="btn btn-primary mb-3 float-end">اضافه کردن کاربر</a>
+<table class="table table-bordered table-striped table-hover">
+  <thead class="table-dark text-center">
+    <tr>
+      <th>ردیف</th>
+      <th>نام کاربری</th>
+      <th>نام</th>
+      <th>نام خانوادگی</th>
+      <th>ایمیل</th>
+      <th>سطح دسترسی</th>
+      <th>آخرین ورود</th>
+      <th>تعداد ورود</th>
+      <th>تاریخ عضویت</th>
+      <th>وضعیت</th>
+      <th>ip</th>
+      <th>عملیات</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for user in users %}
+    <tr>
+      <td>{{ forloop.counter }}</td>
+      <td>{{ user.username }}</td>
+      <td>{{ user.first_name }}</td>
+      <td>{{ user.last_name }}</td>
+      <td>{{ user.email }}</td>
+      <td>{{ user.is_staff|yesno:"مدیر,کاربر عادی" }}</td>
+      <td class="text-center">
+        {% if user.is_online %}
+          <span class="badge bg-success  px-2 py-2">آنلاین</span>
+        {% else %}
+          {{ user.last_login|jformat:"%Y/%m/%d %H:%M" }}
+        {% endif %}
+      </td>
+      <td>{{ user.login_count }}</td>
+      <td>{{ user.date_joined|jformat:"%Y/%m/%d  %H:%M" }}</td>
+      <td>{{ user.is_active|yesno:"فعال,غیرفعال" }}</td>
+      <td>{{ user.ip }}</td>
+      <td>
+        <div class="d-flex justify-content-center gap-2">
+          {% if user.is_active %}
+          <a href="{% url 'users_deactivate' user.id %}" class="btn btn-sm btn-secondary">غیرفعال‌سازی</a>
+          {% else %}
+          <a href="{% url 'users_activate' user.id %}" class="btn btn-sm btn-success">فعال‌سازی</a>
+          {% endif %}
+
+          <a href="{% url 'users_update' user.id %}" class="btn btn-sm btn-warning">ویرایش</a>
+          <a href="{% url 'users_delete' user.id %}" class="btn btn-sm btn-danger">حذف</a>
+        </div>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

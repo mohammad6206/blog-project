@@ -1,0 +1,64 @@
+{% extends 'dashboard/base.html' %}
+{% block title %}{{ title }}{% endblock %}
+{% load widget_tweaks %}
+{% load jformat %}  {# برای تاریخ شمسی #}
+
+{% block content %}
+<!-- Blog Detail Start -->
+<div class="container-fluid blog py-5">
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="blog-item">
+                    <!-- تصویر پست -->
+                    {% if post.image %}
+                    <div class="blog-img">
+                        <img src="{{ post.image.url }}" class="img-fluid w-100 rounded-top" alt="{{ post.title }}">
+                        <div class="blog-info d-flex align-items-center border border-start-0 border-end-0">
+                            <small class="flex-fill text-center border-end py-2">
+                                <i class="fa fa-calendar-alt text-primary me-2"></i>
+                                {{ post.published_date|jformat:" %H:%M  -  %Y/%m/%d " }}
+                            </small>
+                            <span class="flex-fill text-center border-end py-2">
+                                <i class="fa fa-eye text-primary me-2"></i>{{ post.counted_view }}
+                            </span>
+                            <span class="flex-fill text-center py-2">
+                                <i class="fa fa-comments text-primary me-2"></i>{{ post.comments.count }}
+                            </span>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    <!-- محتوای پست -->
+                    <div class="blog-content border border-top-0 rounded-bottom p-4">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <div>
+                                {% for cat in post.category.all %}
+                                    <span class="badge bg-secondary">{{ cat.name }}</span>{% if not forloop.last %} {% endif %}
+                                {% empty %}
+                                    <span class="text-muted">بدون دسته‌بندی</span>
+                                {% endfor %}
+                            </div>
+                            <div>
+                                <small>
+                                    <i class="fa fa-user me-1"></i>
+                                    {% if post.author %}
+                                    {{ post.author.get_full_name|default:post.author.username }}
+                                    {% else %}
+                                    ناشناس
+                                    {% endif %}
+                                </small>
+                            </div>
+                        </div>
+
+                        <h2 class="text-xl fw-bold mb-3">{{ post.title }}</h2>
+                        <p class="my-3">{{ post.content|linebreaks }}</p>
+                    </div>
+                </div>
+               <a href="{% url 'dashboard' %}" class="btn btn-primary w-100 py-3 px-5 mt-4 rounded-pill shadow-sm transition">بازگشت به داشبورد</a>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Blog Detail End -->
+{% endblock %}

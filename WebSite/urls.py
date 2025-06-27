@@ -31,9 +31,10 @@ if settings.SITE_MAINTENANCE:
 
 else:
     urlpatterns = [
-        path('admin/', admin.site.urls),
+        #path('admin/', admin.site.urls),
         path('', include('blog.urls')),
         path('accounts/', include('accounts.urls')), 
+        path('dashboard/', include('dashboard.urls')),
 
     ]
 
