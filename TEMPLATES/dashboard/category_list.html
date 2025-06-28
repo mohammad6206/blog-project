@@ -5,8 +5,24 @@
 {% block header %}دسته‌بندی‌ها{% endblock %}
 
 {% block content %}
-<a href="{% url  'categories_create' %}" class="btn btn-primary mb-3 float-end">اضافه کردن دسته بندی</a>
-<table class="table table-bordered table-striped">
+<div class="row align-items-center mb-4">
+  <div class="col-md-6 mb-2">
+    <div class="input-group shadow-sm">
+      <span class="input-group-text bg-white border-end-0">
+        <i class="fa fa-search text-muted"></i>
+      </span>
+      <input type="text" id="searchInput" class="form-control border-start-0" placeholder="جستجو بر اساس نام دسته‌بندی...">
+    </div>
+  </div>
+
+  <div class="col-md-6 text-end">
+    <a href="{% url 'categories_create' %}" class="btn btn-success shadow-sm">
+      <i class="fa fa-plus me-1"></i> اضافه کردن دسته بندی جدید
+    </a>
+  </div>
+</div>
+
+<table class="table table-bordered table-striped" id="categoriesTable">
   <thead class="table-dark text-center">
     <tr>
       <th>ردیف</th>
@@ -18,7 +34,7 @@
     {% for category in categories %}
     <tr>
       <td>{{ forloop.counter }}</td>
-      <td>{{ category.name }}</td>
+      <td class="category-name">{{ category.name }}</td>
       <td>
         <div class="d-flex justify-content-center gap-2">
           <a href="{% url 'categories_update' category.pk %}" class="btn btn-sm btn-warning">ویرایش</a>
@@ -29,4 +45,23 @@
     {% endfor %}
   </tbody>
 </table>
+
+<script>
+  const searchInput = document.getElementById('searchInput');
+  const tableRows = document.querySelectorAll('#categoriesTable tbody tr');
+
+  function normalize(text) {
+    return text.toLowerCase().trim();
+  }
+
+  searchInput.addEventListener('input', () => {
+    const searchValue = normalize(searchInput.value);
+
+    tableRows.forEach(row => {
+      const name = normalize(row.querySelector('.category-name').textContent);
+      const matches = name.includes(searchValue);
+      row.style.display = matches ? '' : 'none';
+    });
+  });
+</script>
 {% endblock %}

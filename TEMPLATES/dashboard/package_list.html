@@ -1,12 +1,38 @@
 {% extends 'dashboard/base.html' %}
 {% load jformat %}
+{% load custom_filters %}
 
 {% block title %}مدیریت پکیج‌ها{% endblock %}
 {% block header %}پکیج‌ها{% endblock %}
 
 {% block content %}
-<a href="{% url 'packages_create' %}" class="btn btn-primary mb-3 float-end">اضافه کردن پکیج</a>
-<table class="table table-bordered table-striped">
+<!-- بخش جستجو و فیلتر -->
+<div class="row align-items-center mb-4">
+  <div class="col-md-6 mb-2">
+    <div class="input-group shadow-sm">
+      <span class="input-group-text bg-white border-end-0">
+        <i class="fa fa-search text-muted"></i>
+      </span>
+      <input type="text" id="searchInput" class="form-control border-start-0" placeholder="جستجو بر اساس نام یا توضیحات...">
+    </div>
+  </div>
+
+  <div class="col-md-3 mb-2">
+    <select id="statusFilter" class="form-select shadow-sm">
+      <option value="">همه وضعیت‌ها</option>
+      <option value="فعال">فعال ✅</option>
+      <option value="غیرفعال">غیرفعال ❌</option>
+    </select>
+  </div>
+
+  <div class="col-md-3 text-end">
+    <a href="{% url 'packages_create' %}" class="btn btn-success shadow-sm">
+      <i class="fa fa-plus me-1"></i> افزودن پکیج جدید
+    </a>
+  </div>
+</div>
+
+<table class="table table-bordered table-striped" id="packagesTable">
   <thead class="table-dark text-center">
     <tr>
       <th>ردیف</th>
@@ -16,7 +42,7 @@
       <th>هتل</th>
       <th>ستاره</th>
       <th>ظرفیت</th>
-      <td>تعداد روز های اقامت</td>
+      <th>تعداد روز های اقامت</th>
       <th>قیمت</th>
       <th>مکان</th>
       <th>عملیات</th>
@@ -26,20 +52,20 @@
     {% for package in packages %}
     <tr>
       <td>{{ forloop.counter }}</td>
-      <td>{{ package.name }}</td>
-      <td>{{ package.description|truncatechars:20 }}</td>
-      <td>
+      <td class="package-name">{{ package.name }}</td>
+      <td class="package-description">{{ package.description|truncatechars:50 }}</td>
+      <td class="package-status">
         {% if package.status %}
-         فعال✅
+         فعال
         {% else %}
-         غیرفعال❌
+         غیرفعال
         {% endif %}
       </td>
       <td>{{ package.hotel }}</td>
       <td>{{ package.hotel_stars }}</td>
       <td>{{ package.max_count }}</td>
-      <td>{{package.Number_of_nights}}</td>
-      <td>{{ package.price }}$</td>
+      <td>{{ package.Number_of_nights }}</td>
+      <td>{{ package.price|three_digits }} تومان</td>
       <td>{{ package.location }}</td>
       <td>
         <div class="d-flex justify-content-center gap-2">
@@ -51,4 +77,61 @@
     {% endfor %}
   </tbody>
 </table>
+
+<script>
+  const searchInput = document.getElementById('searchInput');
+  const statusFilter = document.getElementById('statusFilter');
+  const tableRows = document.querySelectorAll('#packagesTable tbody tr');
+
+  function normalize(text) {
+    return text.toLowerCase().trim();
+  }
+
+  function filterTable() {
+    const searchValue = normalize(searchInput.value);
+    const statusValue = normalize(statusFilter.value);
+
+    tableRows.forEach(row => {
+      const name = normalize(row.querySelector('.package-name').textContent);
+      const description = normalize(row.querySelector('.package-description').textContent);
+      const status = normalize(row.querySelector('.package-status').textContent);
+
+      const matchesSearch = name.includes(searchValue) || description.includes(searchValue);
+      const matchesStatus = !statusValue || status.includes(statusValue);
+
+      if (matchesSearch && matchesStatus) {
+        row.style.display = '';
+        row.classList.add('fade-in');
+        row.classList.remove('fade-out');
+      } else {
+        row.classList.add('fade-out');
+        setTimeout(() => {
+          row.style.display = 'none';
+        }, 200);
+      }
+    });
+  }
+
+  searchInput.addEventListener('input', filterTable);
+  statusFilter.addEventListener('change', filterTable);
+</script>
+
+<style>
+  .fade-in {
+    animation: fadeIn 0.3s ease-in-out;
+  }
+  .fade-out {
+    animation: fadeOut 0.2s ease-in-out;
+  }
+
+  @keyframes fadeIn {
+    from {opacity: 0;}
+    to {opacity: 1;}
+  }
+  @keyframes fadeOut {
+    from {opacity: 1;}
+    to {opacity: 0;}
+  }
+</style>
+
 {% endblock %}

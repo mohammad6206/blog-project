@@ -1,17 +1,13 @@
 {% extends "base.html" %}
 {% load static %}
+{% load custom_filters %}
+
 {% block content %}
 
 <!-- Header Start -->
 <div class="container-fluid bg-breadcrumb">
     <div class="container text-center py-5" style="max-width: 900px;">
-        <h3 class="text-white display-3 mb-4">Travel Packages</h3>
-        <ol class="breadcrumb justify-content-center mb-0">
-            <li class="breadcrumb-item"><a>Home</a></li>
-            <li class="breadcrumb-item active text-white">Packages</li>
-            <li class="breadcrumb-item active text-white">Package Details</li>
-            <li class="breadcrumb-item active text-white">{{package.id}}</li>
-        </ol>
+        <h3 class="text-white display-3 mb-4">جزئیات پکیج سفر</h3>
     </div>
 </div>
 <!-- Header End -->
@@ -29,30 +25,30 @@
         <h5 class="text-uppercase text-secondary fw-semibold">{{ package.hotel }}</h5>
         <div class="mb-3">
             {% for star in package.hotel_stars %}
-            <small class="fa fa-star text-warning"></small>
+                <small class="fa fa-star text-warning"></small>
             {% endfor %}
         </div>
     </div>
 
     <div class="row justify-content-center mb-4">
         <div class="col-md-8 col-lg-6">
-            <ul class="list-group list-group-flush fs-5">
-                <li class="list-group-item"><strong>Location:</strong> {{ package.location }}</li>
-                <li class="list-group-item"><strong>Number of nights:</strong> {{ package.Number_of_nights }}</li>
-                <li class="list-group-item"><strong>Max guests:</strong> {{ package.max_count }}</li>
-                <li class="list-group-item"><strong>Price:</strong> <span class="text-success fw-bold">${{ package.price }}</span></li>
+            <ul class="list-group list-group-flush fs-5 text-end">
+                <li class="list-group-item"><strong>موقعیت:</strong> {{ package.location }}</li>
+                <li class="list-group-item"><strong> اقامت:</strong> {{ package.Number_of_nights }} روز</li>
+                <li class="list-group-item"><strong>حداکثر ظرفیت:</strong> {{ package.max_count }} نفر</li>
+                <li class="list-group-item"><strong>قیمت:</strong> <span class="text-success fw-bold">{{ package.price|three_digits }} تومان</span></li>
             </ul>
         </div>
     </div>
 
     <div class="row justify-content-center mb-5">
         <div class="col-md-8 col-lg-6">
-            <p class="fs-5 text-muted">{{ package.description }}</p>
+            <p class="fs-5 text-muted text-end">{{ package.description }}</p>
         </div>
     </div>
 
     <div class="text-center">
-        <a href="{% url 'blog:packages' %}" class="btn btn-primary btn-lg px-5">Back to Packages</a>
+        <a href="{% url 'blog:packages' %}" class="btn btn-primary btn-lg px-5">بازگشت به لیست پکیج‌ها</a>
     </div>
 </div>
 

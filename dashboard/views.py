@@ -2,7 +2,7 @@
 from django.contrib.sessions.models import Session
 from django.utils.timezone import now
 from django.shortcuts import render, redirect,get_object_or_404
-from blog.models import Post, pakages, Category,CustomUser
+from blog.models import *
 from django.db.models.functions import TruncMonth
 from django.db.models import Count
 import json
@@ -12,6 +12,7 @@ from django.contrib import messages
 from dashboard.decorator import superuser_required
 from dashboard.forms import *
 import jdatetime
+from django.contrib.admin.views.decorators import staff_member_required
 
 # Create your views here.
 
@@ -80,6 +81,7 @@ def dashboard_home(request):
     pakages_qs = pakages.objects.all()
     categories_qs = Category.objects.all()
     users_qs = CustomUser.objects.all()
+    contact_messages = ContactMessage.objects.order_by('-created_date')[:5]  
 
     posts_count = posts.count()
     pakages_count = pakages_qs.count()
@@ -137,6 +139,7 @@ def dashboard_home(request):
     sorted_users = sorted(users, key=lambda u: (not u.is_online, u.last_login or now()), reverse=False)
 
     return render(request, 'dashboard/dashboard.html', {
+        'contact_messages': contact_messages,
         "users_recent": sorted_users,  
         'posts_count': posts_count,
         'pakages_count': pakages_count,
@@ -151,6 +154,95 @@ def dashboard_home(request):
         'category_post_counts': json.dumps(category_post_counts_data, cls=DjangoJSONEncoder),
         'top_posts': top_posts,
     })
+
+
+
+
+
+
+@superuser_required
+def contact_reply_create(request, pk):
+    message = get_object_or_404(ContactMessage, pk=pk)
+
+    if hasattr(message, 'reply'):
+        messages.warning(request, "برای این پیام قبلاً پاسخی ثبت شده است.")
+        return redirect('contact_message_detail')  
+
+    if request.method == 'POST':
+        form = ContactReplyForm(request.POST)
+        if form.is_valid():
+            reply = form.save(commit=False)
+            reply.message = message
+            reply.replied_by = request.user
+            reply.save()
+            messages.success(request, "پاسخ با موفقیت ثبت شد.")
+            return redirect('contact_message_detail')
+    else:
+        form = ContactReplyForm()
+
+    return render(request, 'dashboard/contact_reply_form.html', {'form': form, 'message': message})
+
+
+
+
+@staff_member_required
+def reply_delete(request, pk):
+    reply = get_object_or_404(ContactReply, pk=pk)
+    message_pk = reply.message.pk 
+    if request.method == 'POST':
+        reply.delete()
+        messages.success(request, "پاسخ با موفقیت حذف شد.")
+        return redirect('contact_message_detail', pk=message_pk)
+
+
+@superuser_required
+def contact_delete(request, pk):
+    contact_message = get_object_or_404(ContactMessage, pk=pk)
+    if request.method == 'POST':
+        contact_message.delete()
+        messages.success(request, 'پیام حذف شد')
+        return redirect('messages_list')
+    return render(request, 'dashboard/confirm_delete_message.html', {
+        'object': contact_message,
+        'title': 'حذف پیام'
+    })
+
+
+
+@superuser_required
+def messages_list(request):
+    messages =ContactMessage.objects.all().order_by('id')
+    return render(request, 'dashboard/messages_list.html', {
+        'contact_messages': messages
+    })
+
+
+
+
+@superuser_required
+def contact_message_detail(request, pk):
+    message = get_object_or_404(ContactMessage, pk=pk)
+    replies = message.replies.all().order_by('-replied_at') 
+    form = ContactReplyForm()
+
+    if request.method == 'POST':
+        form = ContactReplyForm(request.POST)
+        if form.is_valid():
+            reply = form.save(commit=False)
+            reply.message = message
+            reply.replied_by = request.user
+            reply.save()
+            messages.success(request, "پاسخ با موفقیت ثبت شد.")
+            return redirect('contact_message_detail', pk=pk)
+        else:
+            messages.success(request, "لطفاً خطاهای فرم را بررسی کنید.", extra_tags='reply')
+
+    return render(request, 'dashboard/contact_message_detail.html', {
+        'message': message,
+        'replies': replies,
+        'form': form,
+    })
+
 
 
 @superuser_required
@@ -177,9 +269,10 @@ def category_list(request):
 
 
 
+
 @superuser_required
 def users_list(request):
-    users = CustomUser.objects.all().order_by('id')
+    users = CustomUser.objects.all().order_by('date_joined')
     online_user_ids = get_online_user_ids()
 
     for user in users:
@@ -275,7 +368,7 @@ def delete_package(request, pk):
         package.delete()
         messages.success(request, 'پکیج حذف شد.')
         return redirect('package_list')
-    return render(request, 'dashboard/confirm_delete.html', {'object': package, 'title': 'حذف پکیج'})
+    return render(request, 'dashboard/confirm_delete_package.html', {'object': package, 'title': 'حذف پکیج'})
 
 
 
@@ -317,7 +410,7 @@ def delete_category(request, pk):
         category.delete()
         messages.success(request, 'دسته‌بندی حذف شد.')
         return redirect('category_list')
-    return render(request, 'dashboard/confirm_delete.html', {'object': category, 'title': 'حذف دسته‌بندی'})
+    return render(request, 'dashboard/confirm_delete_category.html', {'object': category, 'title': 'حذف دسته‌بندی'})
 
 
 
@@ -358,7 +451,7 @@ def delete_user(request, pk):
         user.delete()
         messages.success(request, 'کاربر حذف شد.')
         return redirect('users_list')
-    return render(request, 'dashboard/confirm_delete.html', {'object': user, 'title': 'حذف کاربر'})
+    return render(request, 'dashboard/confirm_delete_user.html', {'object': user, 'title': 'حذف کاربر'})
 
 
 

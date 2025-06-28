@@ -1,11 +1,11 @@
 {% load static %}
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fa">
 
 <head>
     <meta charset="utf-8">
-    <title>Travela - Tourism Website Template</title>
+    <title>Travela سایت گردشگری</title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <meta content="" name="keywords">
     <meta content="" name="description">
@@ -32,45 +32,94 @@
     <link href="{% static 'css/style.css' %}" rel="stylesheet">
 </head>
 
-<body>
+<body dir="rtl">
 
     {% if messages %}
-    <div class="container mt-3">
+    <div id="message-container" class="fixed-top mt-3 d-flex justify-content-center" style="z-index: 1050;">
         {% for message in messages %}
-        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show shadow mx-3" role="alert">
             {{ message }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="بستن"></button>
         </div>
         {% endfor %}
     </div>
     {% endif %}
 
+
     <!-- Spinner Start -->
     <div id="spinner"
         class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
         <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
-            <span class="visually-hidden">Loading...</span>
+            <span class="visually-hidden">در حال بارگذاری...</span>
         </div>
     </div>
     <!-- Spinner End -->
 
     <!-- Topbar Start -->
-    <div class="container-fluid bg-primary px-5 d-none d-lg-block">
-        <div class="row gx-0 justify-content-end">
-            <div class="col-lg-4 text-end">
-                <ul class="list-inline mb-0">
+    <div dir="ltr" class="container-fluid bg-primary px-5 d-none d-lg-block">
+        <div class="row gx-0 justify-content-start">
+            <div class="col-lg-4 text-secondary">
+                <style>
+                    /* فونت ایران سنس (می‌تونید فونت دلخواه خودتون رو جایگزین کنید) */
+                    @import url('https://cdn.jsdelivr.net/gh/rastikerdar/vazir-font@v30.1.0/dist/font-face.css');
+
+                    .user-menu {
+                        font-family: 'Vazir', Tahoma, sans-serif;
+                        background: linear-gradient(90deg, #1e3c72, #2a5298);
+                        padding: 10px 20px;
+                        border-radius: 30px;
+                        display: inline-flex;
+                        align-items: center;
+                        gap: 20px;
+                        box-shadow: 0 4px 12px rgb(42 82 152 / 0.6);
+                        user-select: none;
+                    }
+
+                    .user-menu li {
+                        list-style: none;
+                    }
+
+                    .user-menu li.text-white {
+                        color: #f0f0f0;
+                        font-weight: 600;
+                        font-size: 1rem;
+                    }
+
+                    .user-menu a {
+                        text-decoration: none;
+                        color: #ffd700;
+                        font-weight: 600;
+                        transition: color 0.3s ease;
+                        padding: 6px 15px;
+                        border-radius: 20px;
+                        background-color: rgba(255 255 255 / 0.1);
+                        box-shadow: 0 2px 8px rgba(255 255 255 / 0.15);
+                    }
+
+                    .user-menu a:hover {
+                        color: #fff;
+                        background-color: #ffd700;
+                        box-shadow: 0 4px 14px #ffd700aa;
+                    }
+
+                    /* واکنش‌گرا برای موبایل */
+                    @media (max-width: 576px) {
+                        .user-menu {
+                            flex-direction: column;
+                            gap: 10px;
+                            padding: 15px 10px;
+                            border-radius: 20px;
+                        }
+                    }
+                </style>
+
+                <ul class="user-menu">
                     {% if request.user.is_authenticated %}
-                    <li class="list-inline-item text-white">{{ request.user.username }} is logged in</li>
-                    <li class="list-inline-item">
-                        <a href="{% url 'accounts:logout' %}" class="text-white">Logout</a>
-                    </li>
+                    <li><a href="{% url 'accounts:logout' %}">خروج</a></li>
+                    <li class="text-white">!عزیز خوش آمدی  {{ request.user.username }}</li>
                     {% else %}
-                    <li class="list-inline-item">
-                        <a href="{% url 'accounts:login' %}" class="text-white">Login</a>
-                    </li>
-                    <li class="list-inline-item">
-                        <a href="{% url 'accounts:regester' %}" class="text-white">Register</a>
-                    </li>
+                    <li><a href="{% url 'accounts:login' %}">ورود</a></li>
+                    <li><a href="{% url 'accounts:regester' %}">ثبت نام</a></li>
                     {% endif %}
                 </ul>
             </div>
@@ -89,13 +138,13 @@
                 <span class="fa fa-bars"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarCollapse">
-                <div class="navbar-nav ms-auto py-0">
-                    <a href="{% url 'blog:index' %}" class="nav-item nav-link active">Home</a>
-                    <a href="{% url 'blog:about' %}" class="nav-item nav-link">About</a>
-                    <a href="{% url 'blog:services' %}" class="nav-item nav-link">Services</a>
-                    <a href="{% url 'blog:packages' %}" class="nav-item nav-link">Packages</a>
-                    <a href="{% url 'blog:blog' %}" class="nav-item nav-link">Blog</a>
-                    <a href="{% url 'blog:contact' %}" class="nav-item nav-link">Contact</a>
+                <div class="navbar-nav me-auto py-0">
+                    <a href="{% url 'blog:index' %}" class="nav-item nav-link active">خانه</a>
+                    <a href="{% url 'blog:about' %}" class="nav-item nav-link">درباره ما</a>
+                    <a href="{% url 'blog:services' %}" class="nav-item nav-link">خدمات</a>
+                    <a href="{% url 'blog:packages' %}" class="nav-item nav-link">پکیج‌ها</a>
+                    <a href="{% url 'blog:blog' %}" class="nav-item nav-link">بلاگ</a>
+                    <a href="{% url 'blog:contact' %}" class="nav-item nav-link">تماس با ما</a>
                 </div>
             </div>
         </nav>
@@ -110,11 +159,11 @@
             <div class="row g-5">
                 <div class="col-md-6 col-lg-6 col-xl-3">
                     <div class="footer-item d-flex flex-column">
-                        <h4 class="mb-4 text-white">Get In Touch</h4>
-                        <a href=""><i class="fas fa-home me-2"></i> 123 Street, New York, USA</a>
+                        <h4 class="mb-4 text-white">تماس با ما</h4>
+                        <a href=""><i class="fas fa-home me-2"></i> خیابان ۱۲۳، نیویورک، آمریکا</a>
                         <a href=""><i class="fas fa-envelope me-2"></i> info@example.com</a>
-                        <a href=""><i class="fas fa-phone me-2"></i> +012 345 67890</a>
-                        <a href="" class="mb-3"><i class="fas fa-print me-2"></i> +012 345 67890</a>
+                        <a href=""><i class="fas fa-phone me-2"></i> +۰۱۲ ۳۴۵ ۶۷۸۹۰</a>
+                        <a href="" class="mb-3"><i class="fas fa-print me-2"></i> +۰۱۲ ۳۴۵ ۶۷۸۹۰</a>
                         <div class="d-flex align-items-center">
                             <i class="fas fa-share fa-2x text-white me-2"></i>
                             <a class="btn-square btn btn-primary rounded-circle mx-1" href=""><i
@@ -130,28 +179,27 @@
                 </div>
                 <div class="col-md-6 col-lg-6 col-xl-3">
                     <div class="footer-item d-flex flex-column">
-                        <h4 class="mb-4 text-white">Menu</h4>
-                        <a href="{% url 'blog:index' %}" class="nav-item nav-link active">Home</a>
-                        <a href="{% url 'blog:about' %}" class="nav-item nav-link">About</a>
-                        <a href="{% url 'blog:services' %}" class="nav-item nav-link">Services</a>
-                        <a href="{% url 'blog:packages' %}" class="nav-item nav-link">Packages</a>
-                        <a href="{% url 'blog:blog' %}" class="nav-item nav-link">Blog</a>
-                        <a href="{% url 'blog:contact' %}" class="nav-item nav-link">Contact</a>
+                        <h4 class="mb-4 text-white">منو</h4>
+                        <a href="{% url 'blog:index' %}" class="nav-item nav-link active">خانه</a>
+                        <a href="{% url 'blog:about' %}" class="nav-item nav-link">درباره ما</a>
+                        <a href="{% url 'blog:services' %}" class="nav-item nav-link">خدمات</a>
+                        <a href="{% url 'blog:packages' %}" class="nav-item nav-link">پکیج‌ها</a>
+                        <a href="{% url 'blog:blog' %}" class="nav-item nav-link">بلاگ</a>
+                        <a href="{% url 'blog:contact' %}" class="nav-item nav-link">تماس با ما</a>
                     </div>
                 </div>
                 <div class="col-md-6 col-lg-6 col-xl-3">
                     <div class="footer-item d-flex flex-column">
-                        <h4 class="mb-4 text-white">Support</h4>
-                        <a href=""><i class="fas fa-angle-right me-2"></i> FAQs</a>
-                        <a href=""><i class="fas fa-angle-right me-2"></i> Privacy Policy</a>
-                        <a href=""><i class="fas fa-angle-right me-2"></i> Terms of Use</a>
+                        <h4 class="mb-4 text-white">پشتیبانی</h4>
+                        <a href=""><i class="fas fa-angle-right me-2"></i> سوالات متداول</a>
+                        <a href=""><i class="fas fa-angle-right me-2"></i> سیاست حفظ حریم خصوصی</a>
+                        <a href=""><i class="fas fa-angle-right me-2"></i> شرایط استفاده</a>
                     </div>
                 </div>
                 <div class="col-md-6 col-lg-6 col-xl-3">
                     <div class="footer-item d-flex flex-column">
-                        <h4 class="mb-4 text-white">Newsletter</h4>
-                        <p>Dolor amet sit justo amet elitr clita ipsum elitr est.</p>
-
+                        <h4 class="mb-4 text-white">خبرنامه</h4>
+                        <p>لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ و با استفاده از طراحان گرافیک.</p>
                     </div>
                 </div>
             </div>

@@ -1,61 +1,143 @@
 {% extends 'dashboard/base.html' %}
 {% load jformat %}
+{% load static %}
+
 {% block title %}مدیریت کاربران{% endblock %}
 {% block header %}کاربران{% endblock %}
 
 {% block content %}
-<a href="{% url 'users_create' %}" class="btn btn-primary mb-3 float-end">اضافه کردن کاربر</a>
-<table class="table table-bordered table-striped table-hover">
-  <thead class="table-dark text-center">
-    <tr>
-      <th>ردیف</th>
-      <th>نام کاربری</th>
-      <th>نام</th>
-      <th>نام خانوادگی</th>
-      <th>ایمیل</th>
-      <th>سطح دسترسی</th>
-      <th>آخرین ورود</th>
-      <th>تعداد ورود</th>
-      <th>تاریخ عضویت</th>
-      <th>وضعیت</th>
-      <th>ip</th>
-      <th>عملیات</th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for user in users %}
-    <tr>
-      <td>{{ forloop.counter }}</td>
-      <td>{{ user.username }}</td>
-      <td>{{ user.first_name }}</td>
-      <td>{{ user.last_name }}</td>
-      <td>{{ user.email }}</td>
-      <td>{{ user.is_staff|yesno:"مدیر,کاربر عادی" }}</td>
-      <td class="text-center">
-        {% if user.is_online %}
-          <span class="badge bg-success  px-2 py-2">آنلاین</span>
-        {% else %}
-          {{ user.last_login|jformat:"%Y/%m/%d %H:%M" }}
-        {% endif %}
-      </td>
-      <td>{{ user.login_count }}</td>
-      <td>{{ user.date_joined|jformat:"%Y/%m/%d  %H:%M" }}</td>
-      <td>{{ user.is_active|yesno:"فعال,غیرفعال" }}</td>
-      <td>{{ user.ip }}</td>
-      <td>
-        <div class="d-flex justify-content-center gap-2">
-          {% if user.is_active %}
-          <a href="{% url 'users_deactivate' user.id %}" class="btn btn-sm btn-secondary">غیرفعال‌سازی</a>
-          {% else %}
-          <a href="{% url 'users_activate' user.id %}" class="btn btn-sm btn-success">فعال‌سازی</a>
-          {% endif %}
 
-          <a href="{% url 'users_update' user.id %}" class="btn btn-sm btn-warning">ویرایش</a>
-          <a href="{% url 'users_delete' user.id %}" class="btn btn-sm btn-danger">حذف</a>
-        </div>
-      </td>
-    </tr>
-    {% endfor %}
-  </tbody>
-</table>
+<div class="row align-items-center mb-4">
+  <div class="col-md-6 mb-2">
+    <div class="input-group shadow-sm">
+      <span class="input-group-text bg-white border-end-0">
+        <i class="fa fa-search text-muted"></i>
+      </span>
+      <input type="text" id="userSearchInput" class="form-control border-start-0" placeholder="جستجو بر اساس نام کاربری، نام، ایمیل، IP ...">
+    </div>
+  </div>
+  <div class="col-md-6 mb-2 text-md-end">
+    <a href="{% url 'users_create' %}" class="btn btn-success shadow-sm">
+      <i class="fa fa-plus me-1"></i> اضافه کردن کاربر جدید
+    </a>
+  </div>
+</div>
+
+<div class="table-responsive">
+  <table class="table table-sm table-bordered table-striped table-hover align-middle text-nowrap" id="usersTable">
+    <thead class="table-dark text-center">
+      <tr>
+        <th>ردیف</th>
+        <th>نام کاربری</th>
+        <th>نام</th>
+        <th>نام خانوادگی</th>
+        <th>ایمیل</th>
+        <th>سطح دسترسی</th>
+        <th>آخرین ورود</th>
+        <th>تعداد ورود</th>
+        <th>تاریخ عضویت</th>
+        <th>وضعیت</th>
+        <th>IP</th>
+        <th>عملیات</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for user in users %}
+      <tr>
+        <td class="text-center small">{{ forloop.counter }}</td>
+        <td class="searchable small">{{ user.username }}</td>
+        <td class="searchable small">{{ user.first_name }}</td>
+        <td class="searchable small">{{ user.last_name }}</td>
+        <td class="searchable small">{{ user.email }}</td>
+        <td class="text-center small">{{ user.is_staff|yesno:"مدیر,کاربر عادی" }}</td>
+        <td class="text-center small">
+          {% if user.is_online %}
+          <span class="badge bg-success d-inline-flex align-items-center px-2 py-1" title="آنلاین">
+            <span class="spinner-grow spinner-grow-sm me-1" role="status" aria-hidden="true"></span>آنلاین
+          </span>
+          {% else %}
+          {{ user.last_login|jformat:"%Y/%m/%d %H:%M" }}
+          {% endif %}
+        </td>
+        <td class="text-center small">{{ user.login_count }}</td>
+        <td class="text-center small">{{ user.date_joined|jformat:"%Y/%m/%d %H:%M" }}</td>
+        <td class="text-center small">
+          {% if user.is_active %}
+          <span class="badge bg-success">فعال</span>
+          {% else %}
+          <span class="badge bg-danger">غیرفعال</span>
+          {% endif %}
+        </td>
+        <td class="searchable text-center small">{{ user.ip }}</td>
+        <td class="text-center">
+          <div class="d-flex justify-content-center gap-1 flex-wrap">
+            {% if user.is_active %}
+            <a href="{% url 'users_deactivate' user.id %}" class="btn btn-sm btn-outline-success" title="غیرفعال‌سازی">
+              <i class="fa fa-user-check"></i>
+            </a>
+            {% else %}
+            <a href="{% url 'users_activate' user.id %}" class="btn btn-sm btn-outline-secondary" title="فعال‌سازی">
+              <i class="fa fa-user-slash"></i>
+            </a>
+            {% endif %}
+            <a href="{% url 'users_update' user.id %}" class="btn btn-sm btn-outline-warning" title="ویرایش">
+              <i class="fa fa-edit"></i>
+            </a>
+            <a href="{% url 'users_delete' user.id %}" class="btn btn-sm btn-outline-danger" title="حذف">
+              <i class="fa fa-trash"></i>
+            </a>
+          </div>
+        </td>
+      </tr>
+      {% empty %}
+      <tr>
+        <td colspan="12" class="text-center text-muted">هیچ کاربری یافت نشد.</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<script>
+  const searchInput = document.getElementById('userSearchInput');
+  const rows = document.querySelectorAll('#usersTable tbody tr');
+
+  function normalize(text) {
+    return text.toLowerCase().trim();
+  }
+
+  searchInput.addEventListener('input', () => {
+    const query = normalize(searchInput.value);
+    let visibleCount = 0;
+
+    rows.forEach(row => {
+      const cells = row.querySelectorAll('.searchable');
+      let rowText = '';
+      cells.forEach(cell => {
+        rowText += normalize(cell.textContent) + ' ';
+      });
+
+      if (rowText.includes(query)) {
+        row.style.display = '';
+        visibleCount++;
+      } else {
+        row.style.display = 'none';
+      }
+    });
+
+    const tbody = document.querySelector('#usersTable tbody');
+    if (visibleCount === 0) {
+      if (!document.getElementById('noResultsRow')) {
+        const noRow = document.createElement('tr');
+        noRow.id = 'noResultsRow';
+        noRow.innerHTML = `<td colspan="12" class="text-center text-muted">هیچ کاربری یافت نشد.</td>`;
+        tbody.appendChild(noRow);
+      }
+    } else {
+      const noRow = document.getElementById('noResultsRow');
+      if (noRow) noRow.remove();
+    }
+  });
+</script>
+
 {% endblock %}

@@ -1,16 +1,12 @@
 {% extends "base.html" %}
 {% load static %}
+{% load jformat %}
 {% block content %}
 
 <!-- Header Start -->
 <div class="container-fluid bg-breadcrumb">
     <div class="container text-center py-5" style="max-width: 900px;">
         <h3 class="text-white display-3 mb-4">{{ post.title }}</h3>
-        <ol class="breadcrumb justify-content-center mb-0">
-            <li class="breadcrumb-item"><a>Home</a></li>
-            <li class="breadcrumb-item"><a>Blog</a></li>
-            <li class="breadcrumb-item active text-white">{{ post.title }}</li>
-        </ol>
     </div>
 </div>
 <!-- Header End -->
@@ -25,48 +21,55 @@
                         <img src="{{ post.image.url }}" class="img-fluid w-100 rounded-top" alt="{{ post.title }}">
                         <div class="blog-info d-flex align-items-center border border-start-0 border-end-0">
                             <small class="flex-fill text-center border-end py-2">
-                                <i class="fa fa-calendar-alt text-primary me-2"></i>{{ post.published_date|date:"M d,Y"}}
+                                <i class="fa fa-calendar-alt text-primary me-2"></i>{{ post.published_date|jformat:"%Y/%m/%d" }}
                             </small>
                             <span class="flex-fill text-center border-end py-2">
-                                <i class="fa fa-eye text-primary me-2"></i>{{ post.counted_view }}
+                                <i class="fa fa-eye text-primary me-2"></i>{{ post.counted_view }} بازدید
                             </span>
                             <span class="flex-fill text-center py-2">
-                                <i class="fa fa-comments text-primary me-2"></i>{{ post.comments.count }}
+                                <i class="fa fa-comments text-primary me-2"></i>{{ post.comments.count }} نظر
                             </span>
                         </div>
                     </div>
+
                     <div class="blog-content border border-top-0 rounded-bottom p-4">
                         <div class="d-flex justify-content-between align-items-center mb-3">
-                            <div>
+                            <div class="text-end">
+                                دسته‌بندی:
                                 {% for cat in post.category.all %}
-                                {{ cat.name }}{% if not forloop.last %}, {% endif %}
+                                    {{ cat.name }}{% if not forloop.last %}، {% endif %}
                                 {% endfor %}
                             </div>
-                            <div>
+                            <div class="text-end">
+                                نویسنده:
                                 {% if post.author %}
-                                Posted By: {{ post.author.get_full_name|default:post.author.username }}
+                                    {{ post.author.get_full_name|default:post.author.username }}
                                 {% else %}
-                                Posted By: unknown
+                                    ناشناس
                                 {% endif %}
                             </div>
                         </div>
 
-                        <h2 class="text-xl font-semibold mb-2">{{ post.title }}</h2>
-                        <p class="my-3">{{ post.content|linebreaks }}</p>
+                        <h2 class="text-xl font-semibold mb-2 text-end">{{ post.title }}</h2>
+                        <div class="text-end">
+                            <p class="my-3">{{ post.content|linebreaks }}</p>
+                        </div>
                     </div>
 
                     <!-- Navigation to previous and next posts -->
                     <div class="d-flex justify-content-between mt-4">
                         {% if previous_post %}
-                        <a href="{% url 'blog:post_detail' previous_post.id %}" class="btn btn-outline-primary">&laquo;
-                            {{ previous_post.title|truncatewords:5 }}</a>
+                        <a href="{% url 'blog:post_detail' previous_post.id %}" class="btn btn-outline-primary">
+                            &laquo; {{ previous_post.title|truncatewords:5 }}
+                        </a>
                         {% else %}
                         <div></div>
                         {% endif %}
 
                         {% if next_post %}
-                        <a href="{% url 'blog:post_detail' next_post.id %}"
-                            class="btn btn-outline-primary">{{next_post.title|truncatewords:5 }} &raquo;</a>
+                        <a href="{% url 'blog:post_detail' next_post.id %}" class="btn btn-outline-primary">
+                            {{ next_post.title|truncatewords:5 }} &raquo;
+                        </a>
                         {% else %}
                         <div></div>
                         {% endif %}

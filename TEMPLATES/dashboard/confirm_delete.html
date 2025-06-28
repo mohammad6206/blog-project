@@ -2,10 +2,11 @@
 {% block title %}{{ title }}{% endblock %}
 {% block content %}
 <h2>{{ title }}</h2>
-<p>آیا مطمئن هستید که می‌خواهید "{{ object }}" را حذف کنید؟</p>
+<p>آیا مطمئن هستید که می‌خواهید پست "{{ object }}" را حذف کنید؟</p>
 <form method="post">
   {% csrf_token %}
   <button type="submit" class="btn btn-danger">حذف</button>
   <a href="{% url 'post_list' %}" class="btn btn-secondary">انصراف</a>
 </form>
 {% endblock %}
+

@@ -1,25 +1,24 @@
 {% extends "base.html" %}
 {% load static %}
+{% load custom_filters %}
+
+
 {% block content %}
 
 <!-- Header Start -->
-<div class="container-fluid bg-breadcrumb">
+<div class="container-fluid bg-breadcrumb" dir="rtl">
     <div class="container text-center py-5" style="max-width: 900px;">
-        <h3 class="text-white display-3 mb-4">Travel Packages</h3>
-        <ol class="breadcrumb justify-content-center mb-0">
-            <li class="breadcrumb-item"><a>Home</a></li>
-            <li class="breadcrumb-item active text-white">Packages</li>
-        </ol>
+        <h3 class="text-white display-3 mb-4">پکیج‌های مسافرتی</h3>
     </div>
 </div>
 <!-- Header End -->
 
 <!-- Packages Start -->
-<div class="container-fluid packages py-5">
+<div class="container-fluid packages py-5" dir="rtl">
     <div class="container py-5">
         <div class="mx-auto text-center mb-5" style="max-width: 900px;">
-            <h5 class="section-title px-3">Packages</h5>
-            <h1 class="mb-0">Awesome Packages</h1>
+            <h5 class="section-title px-3">پکیج‌ها</h5>
+            <h1 class="mb-0">پکیج‌های فوق‌العاده</h1>
         </div>
 
         <div class="packages-carousel owl-carousel">
@@ -33,13 +32,13 @@
                             <i class="fa fa-map-marker-alt me-2"></i>{{ package.location }}
                         </small>
                         <small class="flex-fill text-center border-end py-2">
-                            <i class="fa fa-calendar-alt me-2"></i>{{ package.Number_of_nights }} days
+                            <i class="fa fa-calendar-alt me-2"></i>{{ package.Number_of_nights }} روز
                         </small>
                         <small class="flex-fill text-center py-2">
-                            <i class="fa fa-user me-2"></i>{{ package.max_count }} Person
+                            <i class="fa fa-user me-2"></i>{{ package.max_count }} نفر
                         </small>
                     </div>
-                    <div class="packages-price py-2 px-4">${{ package.price }}</div>
+                    <div class="packages-price py-2 px-8 text-center">{{ package.price|three_digits }} تومان</div>
                 </div>
 
                 <div class="packages-content bg-light">
@@ -56,14 +55,14 @@
                     <div class="row bg-primary rounded-bottom mx-0">
                         <div class="col-12 text-center px-0">
                             <a href="{% url 'blog:package_detail' package.id %}"
-                                class="btn-hover btn text-white py-2 px-4 d-inline-block">Read More</a>
+                                class="btn-hover btn text-white py-2 px-4 d-inline-block">جزئیات بیشتر</a>
                         </div>
                     </div>
                 </div>
             </div>
             {% empty %}
             <div class="text-center w-100">
-                <h5 class="mb-0">No Packages Available</h5>
+                <h5 class="mb-0">هیچ پکیجی در حال حاضر موجود نیست</h5>
             </div>
             {% endfor %}
         </div>

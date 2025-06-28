@@ -1,0 +1,26 @@
+{% extends 'dashboard/base.html' %}
+
+{% block title %}پاسخ به پیام{% endblock %}
+{% block header %}پاسخ به پیام کاربر{% endblock %}
+
+{% block content %}
+<div class="card shadow">
+  <div class="card-body">
+    <h5 class="card-title">پاسخ به پیام از <strong>{{ message.name }}</strong></h5>
+    <p><strong>ایمیل:</strong> {{ message.email }}</p>
+    <p><strong>موضوع:</strong> {{ message.subject|default:"بدون موضوع" }}</p>
+    <p><strong>متن پیام:</strong></p>
+    <div class="alert alert-secondary">{{ message.message }}</div>
+
+    <form method="post">
+      {% csrf_token %}
+      <div class="mb-3">
+        {{ form.reply_text.label_tag }}
+        {{ form.reply_text }}
+      </div>
+      <button type="submit" class="btn btn-success">ارسال پاسخ</button>
+      <a href="{% url 'contact_message_detail' message.pk%}" class="btn btn-secondary">بازگشت</a>
+    </form>
+  </div>
+</div>
+{% endblock %}

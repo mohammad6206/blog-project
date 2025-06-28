@@ -1,0 +1,12 @@
+{% extends 'dashboard/base.html' %}
+{% block title %}{{ title }}{% endblock %}
+{% block content %}
+<h2>{{ title }}</h2>
+<p>آیا مطمئن هستید که می‌خواهید پکیج‌ "{{ object }}" را حذف کنید؟</p>
+<form method="post">
+  {% csrf_token %}
+  <button type="submit" class="btn btn-danger">حذف</button>
+  <a href="{% url 'package_list' %}" class="btn btn-secondary">انصراف</a>
+</form>
+{% endblock %}
+

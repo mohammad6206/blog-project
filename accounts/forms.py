@@ -2,25 +2,27 @@
 from django.contrib.auth import authenticate
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
-from django.contrib.auth.models import User
-
+from blog.models import CustomUser
 class CustomUserCreationForm(UserCreationForm):
     email = forms.EmailField(required=True)
 
     class Meta:
-        model = User
-        fields = ("username", "email", "password1", "password2")
+        model = CustomUser
+        fields = ("username","first_name", "last_name", "email", "password1", "password2")
 
 
 
 
 
+from django.contrib.auth import get_user_model
+from django.contrib.auth import authenticate
+from django import forms
 
-
+CustomUser = get_user_model()
 
 class EmailOrUsernameAuthenticationForm(forms.Form):
-    username_or_email = forms.CharField(label="Email or Username")
-    password = forms.CharField(label="Password", widget=forms.PasswordInput)
+    username_or_email = forms.CharField(label="ایمیل یا نام کاربری")
+    password = forms.CharField(label="رمز عبور", widget=forms.PasswordInput)
 
     def __init__(self, *args, **kwargs):
         self.request = kwargs.pop('request', None)
@@ -31,21 +33,32 @@ class EmailOrUsernameAuthenticationForm(forms.Form):
         username_or_email = cleaned_data.get('username_or_email')
         password = cleaned_data.get('password')
 
+        user_obj = None
+
         if username_or_email and password:
+            # ۱. پیدا کردن یوزر (بدون احراز هویت)
             if '@' in username_or_email:
                 try:
-                    user_obj = User.objects.get(email=username_or_email)
-                    username = user_obj.username
-                except User.DoesNotExist:
-                    raise forms.ValidationError("The email or username is incorrect.")
+                    user_obj = CustomUser.objects.get(email=username_or_email)
+                except CustomUser.DoesNotExist:
+                    raise forms.ValidationError("ایمیل  وارد شده وجود ندارد")
             else:
-                username = username_or_email
+                try:
+                    user_obj = CustomUser.objects.get(username=username_or_email)
+                except CustomUser.DoesNotExist:
+                    raise forms.ValidationError("نام کاربری وارد شده وجود ندارد")
 
-            user = authenticate(self.request, username=username, password=password)
+            # ۲. بررسی فعال بودن
+            if not user_obj.is_active:
+                raise forms.ValidationError("حساب شما توسط ادمین غیرفعال شده است")
+
+            # ۳. احراز هویت
+            user = authenticate(self.request, username=user_obj.username, password=password)
             if user is None:
-                raise forms.ValidationError("Incorrect username or password.")
+                raise forms.ValidationError("نام کاربری یا رمز عبور اشتباه است.")
 
             self.user = user
+
         return cleaned_data
 
     def get_user(self):

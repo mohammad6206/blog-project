@@ -1,74 +1,190 @@
 {% load static %}
+{% load widget_tweaks %}
 <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 
-<section class="vh-100" style="background-color: #eee;">
+<style>
+    /* پس‌زمینه اصلی */
+    body {
+        background-color: #2a3f5f;
+        /* آبی ملایم و تاریک */
+        color: #e0e6f0;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    /* کارت */
+    .card {
+        background-color: #3e536b;
+        /* خاکستری آبی ملایم */
+        color: #f0f4ff;
+        border-radius: 12px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+        transition: box-shadow 0.3s ease-in-out;
+    }
+
+    .card:hover {
+        box-shadow: 0 12px 28px rgba(0, 0, 0, 0.4);
+    }
+
+    /* عنوان */
+    h2 {
+        color: #a1caff;
+    }
+
+    /* ورودی‌ها */
+    .input-group-text {
+        background-color: #577399;
+        color: #d8e1ff;
+        border: none;
+        transition: background-color 0.3s ease;
+    }
+
+    .input-group-text:hover {
+        background-color: #6a85b1;
+    }
+
+    .form-control {
+        background-color: #577399;
+        color: #e7ebf7;
+        border: none;
+        border-radius: 6px;
+        transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .form-control:focus {
+        background-color: #738bbf;
+        color: #fff;
+        box-shadow: 0 0 8px 2px rgba(120, 150, 240, 0.6);
+    }
+
+    /* ارور‌ها */
+    .text-danger,
+    .alert-danger {
+        color: #ff7b7b !important;
+    }
+
+    .alert-danger {
+        background-color: #8b0000;
+        border-radius: 6px;
+    }
+
+    /* دکمه */
+    .btn-success {
+        background-color: #5cb85c;
+        border: none;
+        border-radius: 8px;
+        font-weight: 600;
+        transition: background-color 0.3s ease, transform 0.2s ease;
+    }
+
+    .btn-success:hover {
+        background-color: #4cae4c;
+        transform: scale(1.05);
+    }
+
+    /* لینک‌ها */
+    a {
+        color: #a1caff;
+        transition: color 0.3s ease;
+    }
+
+    a:hover {
+        color: #d0e5ff;
+        text-decoration: underline;
+    }
+</style>
+
+<section class="vh-100">
     <div class="container h-100">
-        <div class="row d-flex justify-content-center align-items-center h-100">
-            <div class="col-lg-12 col-xl-11">
-                <div class="card text-black" style="border-radius: 25px;">
-                    <div class="card-body p-md-5">
-                        <div class="row justify-content-center">
-                            <div class="col-md-10 col-lg-6 col-xl-5 order-2 order-lg-1">
+        <div class="row justify-content-center align-items-center h-100">
+            <div class="col-lg-10">
+                <div class="card shadow-lg border-0 rounded-4">
+                    <div class="row g-0">
+                        <!-- Form section -->
+                        <h2 class="fw-bold mb-4 text-center text-white"><i class="fa fa-user-plus me-2"></i>ثبت‌نام</h2>
+                        </h2>
+                        <form dir="rtl" method="POST" action="" class="mx-auto" style="max-width: 400px;">
+                            {% csrf_token %}
 
-                                <p class="text-center h1 fw-bold mb-5 mx-1 mx-md-4 mt-4">Sign up</p>
-
-                                <form method="post" action="" class="mx-1 mx-md-4">
-                                    {% csrf_token %}
-
-                                    {% if form.non_field_errors %}
-                                    <div class="alert alert-danger text-center">
-                                        {% for error in form.non_field_errors %}
-                                        {{ error }}
-                                        {% endfor %}
-                                    </div>
-                                    {% endif %}
-
-                                    <!-- Username input -->
-                                    <div class="d-flex flex-column mb-4">
-                                        {{ form.username.errors }}
-                                        {{ form.username }}
-                                        <label class="form-label mt-1" for="id_username">Username</label>
-                                    </div>
-
-                                    <!-- Email input -->
-                                    <div class="d-flex flex-column mb-4">
-                                        {{ form.email.errors }}
-                                        {{ form.email }}
-                                        <label class="form-label mt-1" for="id_email">Email</label>
-                                    </div>
-
-
-                                    <!-- Password input -->
-                                    <div class="d-flex flex-column mb-4">
-                                        {{ form.password1.errors }}
-                                        {{ form.password1 }}
-                                        <label class="form-label mt-1" for="id_password1">Password</label>
-                                    </div>
-
-                                    <!-- Repeat password input -->
-                                    <div class="d-flex flex-column mb-4">
-                                        {{ form.password2.errors }}
-                                        {{ form.password2 }}
-                                        <label class="form-label mt-1" for="id_password2">Repeat Password</label>
-                                    </div>
-
-                                    <div class="d-flex justify-content-center mx-4 mb-3 mb-lg-4">
-                                        <button type="submit" class="btn btn-primary btn-lg">Register</button>
-                                    </div>
-
-                                    <div class="form-check d-flex justify-content-center mb-5">
-                                        <label class="form-check-label" for="terms">
-                                            <a href="{% url 'accounts:login' %}">Login</a>
-                                        </label>
-                                    </div>
-                                </form>
-
+                            {% if form.non_field_errors %}
+                            <div class="alert alert-danger text-center py-2">
+                                {% for error in form.non_field_errors %}
+                                {{ error }}
+                                {% endfor %}
                             </div>
-                            <div class="col-md-10 col-lg-6 col-xl-7 d-flex align-items-center order-1 order-lg-2">
-                                <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-registration/draw1.webp"
-                                    class="img-fluid" alt="Sample image">
+                            {% endif %}
+
+                            <!-- Username -->
+                            <div class="mb-2">
+                                <label for="id_username" class="form-label small">نام کاربری</label>
+                                <div class="input-group input-group-sm shadow-sm">
+                                    <span class="input-group-text bg-light"><i class="fa fa-user"></i></span>
+                                    {{ form.username|add_class:"form-control form-control-sm" }}
+                                </div>
+                                <small class="text-danger">{{ form.username.errors }}</small>
                             </div>
-                        </div>
+
+                            <!-- First Name -->
+                            <div class="mb-2">
+                                <label for="id_first_name" class="form-label small">نام</label>
+                                <div class="input-group input-group-sm shadow-sm">
+                                    <span class="input-group-text bg-light"><i class="fa fa-id-badge"></i></span>
+                                    {{ form.first_name|add_class:"form-control form-control-sm" }}
+                                </div>
+                                <small class="text-danger">{{ form.first_name.errors }}</small>
+                            </div>
+
+                            <!-- Last Name -->
+                            <div class="mb-2">
+                                <label for="id_last_name" class="form-label small">نام خانوادگی</label>
+                                <div class="input-group input-group-sm shadow-sm">
+                                    <span class="input-group-text bg-light"><i class="fa fa-id-card"></i></span>
+                                    {{ form.last_name|add_class:"form-control form-control-sm" }}
+                                </div>
+                                <small class="text-danger">{{ form.last_name.errors }}</small>
+                            </div>
+
+                            <!-- Email -->
+                            <div class="mb-2">
+                                <label for="id_email" class="form-label small">ایمیل</label>
+                                <div class="input-group input-group-sm shadow-sm">
+                                    <span class="input-group-text bg-light"><i class="fa fa-envelope"></i></span>
+                                    {{ form.email|add_class:"form-control form-control-sm" }}
+                                </div>
+                                <small class="text-danger">{{ form.email.errors }}</small>
+                            </div>
+
+                            <!-- Password -->
+                            <div class="mb-2">
+                                <label for="id_password1" class="form-label small">رمز عبور</label>
+                                <div class="input-group input-group-sm shadow-sm">
+                                    <span class="input-group-text bg-light"><i class="fa fa-lock"></i></span>
+                                    {{ form.password1|add_class:"form-control form-control-sm" }}
+                                </div>
+                                <small class="text-danger">{{ form.password1.errors }}</small>
+                            </div>
+
+                            <!-- Confirm Password -->
+                            <div class="mb-3">
+                                <label for="id_password2" class="form-label small">تکرار رمز عبور</label>
+                                <div class="input-group input-group-sm shadow-sm">
+                                    <span class="input-group-text bg-light"><i class="fa fa-lock"></i></span>
+                                    {{ form.password2|add_class:"form-control form-control-sm" }}
+                                </div>
+                                <small class="text-danger">{{ form.password2.errors }}</small>
+                            </div>
+
+                            <!-- Submit -->
+                            <div class="d-grid mb-2">
+                                <button type="submit" class="btn btn-success btn-sm">ثبت‌نام</button>
+                            </div>
+
+                            <!-- Link to login -->
+                            <div class="text-center small">
+                                <p class="mb-0">قبلاً ثبت‌نام کرده‌اید؟ <a href="{% url 'accounts:login' %}">ورود</a>
+                                </p>
+                            </div>
+                        </form>
                     </div>
                 </div>
             </div>

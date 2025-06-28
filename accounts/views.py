@@ -4,7 +4,19 @@ from accounts.forms import CustomUserCreationForm,EmailOrUsernameAuthenticationF
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login, logout
 from django.shortcuts import render, redirect
-from django.contrib.auth.models import User
+from blog.models import *
+
+
+
+def get_client_ip(request):
+    x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+    if x_forwarded_for:
+        ip = x_forwarded_for.split(',')[0].strip()
+    else:
+        ip = request.META.get('REMOTE_ADDR')
+    return ip
+
+
 
 def login_view(request):
     if request.user.is_authenticated:
@@ -13,6 +25,10 @@ def login_view(request):
     if request.method == 'POST':
         form = EmailOrUsernameAuthenticationForm(request=request, data=request.POST)
         if form.is_valid():
+            user= form.get_user()
+            user.ip = get_client_ip(request)
+            user.login_count += 1
+            user.save()
             login(request, form.get_user())
             return redirect('blog:index')
         else:

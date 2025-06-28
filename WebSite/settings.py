@@ -153,16 +153,13 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 SITE_MAINTENANCE=False
 
-if DEBUG:
-    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-else:
-    EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-    EMAIL_HOST = 'smtp.gmail.com'
-    EMAIL_PORT = 587
-    EMAIL_USE_TLS = True
-    EMAIL_HOST_USER = 'mysite.blog.post@gmail.com'
-    EMAIL_HOST_PASSWORD = 'kipevawpylklefkk'  
-    DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'mysite.blog.post@gmail.com'
+EMAIL_HOST_PASSWORD = 'kipevawpylklefkk'  
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 
 

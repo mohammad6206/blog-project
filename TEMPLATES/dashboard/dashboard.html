@@ -1,6 +1,7 @@
 {% extends "dashboard/base.html" %}
 {% load jformat %}
 
+
 {% block title %}داشبورد مدیریت {% endblock %}
 
 {% block content %}
@@ -133,6 +134,68 @@
     </div>
   </div>
 </div>
+<!-- پیام‌های کاربران و بازخورد مدیر -->
+<div class="row g-4 mt-4">
+  <div class="col-12">
+    <div class="card shadow-sm rounded-4">
+      <div class="card-body">
+        <h6 class="card-title mb-3">📨 پیام‌های دریافتی از کاربران</h6>
+        <div class="table-responsive">
+          <table class="table table-hover align-middle text-center">
+            <thead class="table-light">
+              <tr>
+                <th>ردیف</th>
+                <th>نام </th>
+                <th>ایمیل</th>
+                <th>تاریخ </th>
+                <th>موضوع</th>
+                <th>متن </th>
+                <th>وضعیت پاسخ</th>
+                <th>عملیات</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for msg in contact_messages %}
+              <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ msg.name }}</td>
+                <td>{{ msg.email }}</td>
+                <td>{{ msg.created_at|jformat:"%Y/%m/%d %H:%M" }}</td>
+                <td>{{ msg.subject|default:"-" }}</td>
+                <td class=text-start>{{ msg.message|truncatechars:50 }}</td>
+                <td>
+                  {% if msg.replies.all %}
+                  <span class="badge bg-success">پاسخ داده شده</span>
+                  {% else %}
+                  <span class="badge bg-warning text-dark">در انتظار پاسخ</span>
+                  {% endif %}
+                </td>
+                <td>
+                  <div class="d-flex justify-content-center gap-2">
+                    <a href="{% url 'contact_message_detail' msg.pk %}" class="btn btn-sm btn-success"
+                      title="مشاهده پیام">
+                      <i class="fa fa-eye"></i>
+                    </a>
+                  </div>
+                </td>
+              </tr>
+              {% empty %}
+              <tr>
+                <td colspan="7">پیامی دریافت نشده است.</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+
+        <!-- امکان دیدن بیشتر -->
+        <div class="text-center mt-3">
+          <a href="{% url 'messages_list' %}" class="btn btn-outline-primary btn-sm">مشاهده همه پیام‌ها</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
 <!-- کاربران بر اساس آخرین فعالیت -->
 <div class="row g-4 mt-4">
@@ -165,21 +228,21 @@
                 <td>{{ user.first_name|default:"-" }}</td>
                 <td>{{ user.last_name|default:"-" }}</td>
                 <td>{{ user.email|default:"-" }}</td>
-                <td>{{ user.is_staff|yesno:"مدیر,کاربر عادی" }}</td>               
+                <td>{{ user.is_staff|yesno:"مدیر,کاربر عادی" }}</td>
                 <td>
                   {% if user.is_online %}
-                    <span class="badge bg-success fs-6 px-3 py-2">آنلاین</span>
+                  <span class="badge bg-success fs-6 px-3 py-2">آنلاین</span>
                   {% else %}
-                    {{ user.last_login|jformat:" %H:%M  %Y/%m/%d " }}
+                  {{ user.last_login|jformat:" %H:%M %Y/%m/%d " }}
                   {% endif %}
                 </td>
                 <td>{{ user.login_count|default:"-" }}</td>
-                <td>{{ user.date_joined|jformat:"%H:%M  %Y/%m/%d " }}</td>
+                <td>{{ user.date_joined|jformat:"%H:%M %Y/%m/%d " }}</td>
                 <td>
                   {% if user.is_active %}
-                    <span class="badge bg-primary">فعال</span>
+                  <span class="badge bg-primary">فعال</span>
                   {% else %}
-                    <span class="badge bg-secondary">غیرفعال</span>
+                  <span class="badge bg-secondary">غیرفعال</span>
                   {% endif %}
                 </td>
                 <td>{{ user.ip|default:"-" }}</td>

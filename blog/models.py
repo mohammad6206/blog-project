@@ -45,10 +45,22 @@ class ContactMessage(models.Model):
     email=models.EmailField()
     subject = models.CharField(max_length=255, blank=True, null=True)
     message=models.CharField(max_length=255)
+    created_date = models.DateTimeField(default=timezone.now)
+
 
     def __str__(self):
         return self.name
     
+class ContactReply(models.Model):
+    message = models.ForeignKey('ContactMessage', on_delete=models.CASCADE, related_name='replies')
+    reply_text = models.TextField()
+    replied_at = models.DateTimeField(auto_now_add=True)
+    replied_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True)
+
+    def __str__(self):
+        return f"Reply to: {self.message.name}"
+
+
 
 class pakages(models.Model):
     image = models.ImageField(upload_to='blog/', default='blog/default.jpg')

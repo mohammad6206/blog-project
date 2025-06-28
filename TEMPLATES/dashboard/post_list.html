@@ -5,9 +5,35 @@
 {% block header %}پست‌ها{% endblock %}
 
 {% block content %}
-<a href="{% url 'posts_create' %}" class="btn btn-primary mb-3 float-end">اضافه کردن پست</a>
-<table class="table table-bordered table-striped table-hover">
-  <thead class="table-dark text-center">
+<!-- بخش جستجو و فیلتر -->
+<div class="row align-items-center mb-4">
+  <div class="col-md-6 mb-2">
+    <div class="input-group shadow-sm">
+      <span class="input-group-text bg-white border-end-0">
+        <i class="fa fa-search text-muted"></i>
+      </span>
+      <input type="text" id="searchInput" class="form-control border-start-0" placeholder="جستجو بر اساس عنوان پست...">
+    </div>
+  </div>
+
+  <div class="col-md-3 mb-2">
+    <select id="statusFilter" class="form-select shadow-sm">
+      <option value="">همه وضعیت‌ها</option>
+      <option value="منتشر شده">منتشر شده ✅</option>
+      <option value="منتشر نشده">منتشر نشده ❌</option>
+    </select>
+  </div>
+
+  <div class="col-md-3 text-end">
+    <a href="{% url 'posts_create' %}" class="btn btn-success shadow-sm">
+      <i class="fa fa-plus me-1"></i> افزودن پست جدید
+    </a>
+  </div>
+</div>
+
+<!-- جدول پست‌ها -->
+<table class="table table-bordered table-hover text-center align-middle" id="postsTable">
+  <thead class="table-dark">
     <tr>
       <th>ردیف</th>
       <th>عنوان</th>
@@ -24,21 +50,76 @@
     {% for post in posts %}
     <tr>
       <td>{{ forloop.counter }}</td>
-      <td>{{ post.title }}</td>
+      <td class="post-title">{{ post.title }}</td>
       <td>{{ post.author }}</td>
-      <td>{{ post.status|yesno:" منتشر شده ✅ ,منتشر نشده❌" }}</td>
-      <td>{{ post.published_date|jformat:"%H:%M %Y/%m/%d " }}</td>
-      <td>{{ post.created_date|jformat:" %H:%M %Y/%m/%d " }}</td>
-      <td>{{ post.updated_date|jformat:" %H:%M %Y/%m/%d " }}</td>
+      <td class="post-status">{{ post.status|yesno:"منتشر شده ✅,منتشر نشده ❌" }}</td>
+      <td>{{ post.published_date|jformat:"%Y/%m/%d %H:%M" }}</td>
+      <td>{{ post.created_date|jformat:"%Y/%m/%d %H:%M" }}</td>
+      <td>{{ post.updated_date|jformat:"%Y/%m/%d %H:%M" }}</td>
       <td>{{ post.counted_view }}</td>
       <td>
         <div class="d-flex justify-content-center gap-2">
-        <a href="{% url 'posts_update' post.pk %}" class="btn btn-sm btn-warning">ویرایش</a>
-        <a href="{% url 'posts_delete' post.pk %}" class="btn btn-sm btn-danger">حذف</a>
+          <a href="{% url 'posts_update' post.pk %}" class="btn btn-sm btn-warning">ویرایش</a>
+          <a href="{% url 'posts_delete' post.pk %}" class="btn btn-sm btn-danger">حذف</a>
         </div>
       </td>
     </tr>
     {% endfor %}
   </tbody>
 </table>
+
+<!-- اسکریپت جستجو و فیلتر -->
+<script>
+  const searchInput = document.getElementById("searchInput");
+  const statusFilter = document.getElementById("statusFilter");
+  const tableRows = document.querySelectorAll("#postsTable tbody tr");
+
+  function normalize(text) {
+    return text.toLowerCase().trim();
+  }
+
+  function filterTable() {
+    const searchValue = normalize(searchInput.value);
+    const statusValue = normalize(statusFilter.value);
+
+    tableRows.forEach(row => {
+      const title = normalize(row.querySelector(".post-title")?.textContent || "");
+      const status = normalize(row.querySelector(".post-status")?.textContent || "");
+
+      const matchSearch = title.includes(searchValue);
+      const matchStatus = !statusValue || status.includes(statusValue);
+
+      if (matchSearch && matchStatus) {
+        row.style.display = "";
+        row.classList.add("fade-in");
+        row.classList.remove("fade-out");
+      } else {
+        row.classList.add("fade-out");
+        setTimeout(() => (row.style.display = "none"), 200);
+      }
+    });
+  }
+
+  searchInput.addEventListener("input", filterTable);
+  statusFilter.addEventListener("change", filterTable);
+</script>
+
+<style>
+  .fade-in {
+    animation: fadeIn 0.3s ease-in-out;
+  }
+  .fade-out {
+    animation: fadeOut 0.2s ease-in-out;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  @keyframes fadeOut {
+    from { opacity: 1; }
+    to { opacity: 0; }
+  }
+</style>
+
 {% endblock %}

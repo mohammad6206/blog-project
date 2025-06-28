@@ -1,6 +1,8 @@
 from django import forms
 from django.contrib.auth import authenticate
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model, authenticate
+
+User = get_user_model()
 
 class EmailOrUsernameAuthenticationForm(forms.Form):
     username_or_email = forms.CharField(label="Email or Username")
@@ -12,7 +14,6 @@ class EmailOrUsernameAuthenticationForm(forms.Form):
         password = cleaned_data.get('password')
 
         if username_or_email and password:
-            # بررسی اینکه ورودی ایمیل است یا یوزرنیم
             if '@' in username_or_email:
                 try:
                     user_obj = User.objects.get(email=username_or_email)

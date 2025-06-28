@@ -1,5 +1,5 @@
 from django import forms
-from blog.models import Post, pakages, Category, CustomUser
+from blog.models import *
 
 
 
@@ -96,3 +96,24 @@ class CustomUserForm(forms.ModelForm):
         if commit:
             user.save()
         return user
+
+
+
+
+
+
+
+class ContactReplyForm(forms.ModelForm):
+    class Meta:
+        model = ContactReply
+        fields = ['reply_text']
+        widgets = {
+            'reply_text': forms.Textarea(attrs={
+                'class': 'form-control',
+                'rows': 5,
+                'placeholder': 'پاسخ خود را اینجا بنویسید...'
+            }),
+        }
+        labels = {
+            'reply_text': 'متن پاسخ',
+        }

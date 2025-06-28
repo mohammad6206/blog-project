@@ -11,7 +11,6 @@
     <form method="post" enctype="multipart/form-data" novalidate>
         {% csrf_token %}
 
-        
         <!-- پیش‌نمایش تصویر -->
         {% if form.image %}
         <div class="mb-3">
@@ -23,26 +22,20 @@
 
         {% for field in form %}
         <div class="mb-3">
-            <label class="form-label fw-bold" for="{{ field.id_for_label }}">{{ field.label }}</label>
-
-            {% if field.errors %}
             {% if field.field.widget.input_type == 'checkbox' %}
             <div class="form-check d-flex align-items-center gap-2">
-                {{ field|add_class:"form-check-input" }} 
                 <label class="form-check-label fw-bold" for="{{ field.id_for_label }}">{{ field.label }}</label>
+                {{ field|add_class:"form-check-input m-0" }}
             </div>
             {% else %}
+            <label class="form-label fw-bold" for="{{ field.id_for_label }}">{{ field.label }}</label>
             {{ field|add_class:"form-control" }}
             {% endif %}
 
-            {% else %}
-            {% if field.field.widget.input_type == 'checkbox' %}
-            <div class="form-check">
-                {{ field|add_class:"form-check-input" }}
+            {% if field.errors %}
+            <div class="text-danger small mt-1">
+                {{ field.errors|striptags }}
             </div>
-            {% else %}
-            {{ field|add_class:"form-control" }}
-            {% endif %}
             {% endif %}
 
             {% if field.help_text %}

@@ -4,6 +4,7 @@ from blog.forms import ContactMessageForm
 from django.shortcuts import render, get_object_or_404, redirect
 from blog.models import Post,ContactMessage,pakages
 from django.utils import timezone
+from django.utils.translation import gettext as _
 
 
 def index_View(request):
@@ -76,7 +77,7 @@ def post_detail_View(request, id):
 def contact_view(request):
     if request.method == 'POST':
         if not request.user.is_authenticated:
-            messages.error(request, 'You must be logged in to send a message.')
+            messages.error(request, 'برای ارسال پیام باید وارد حساب کاربری شوید.')
             return redirect('blog:contact')
 
         form = ContactMessageForm(request.POST)
@@ -85,10 +86,10 @@ def contact_view(request):
             message.name = request.user.get_full_name() or request.user.username
             message.email = request.user.email
             message.save()
-            messages.success(request, 'Your message has been sent successfully.')
+            messages.success(request, 'پیام شما با موفقیت ارسال شد.')
             return redirect('blog:contact')
         else:
-            messages.error(request, 'Please check the form for errors.')
+            messages.error(request, 'لطفاً فرم را به‌درستی تکمیل کنید.')
     else:
         if request.user.is_authenticated:
             initial_data = {
@@ -99,7 +100,7 @@ def contact_view(request):
         else:
             form = ContactMessageForm()
 
-    recent_messages = ContactMessage.objects.order_by('-id')[:10]
+    recent_messages = ContactMessage.objects.order_by('id')[:10]
 
     return render(request, 'contact.html', {
         'form': form,

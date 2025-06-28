@@ -1,0 +1,94 @@
+{% extends 'dashboard/base.html' %}
+{% load jformat %}
+
+
+{% block title %}جزئیات پیام{% endblock %}
+{% block header %}مشاهده پیام{% endblock %}
+
+{% block content %}
+<div class="card shadow">
+    <div class="card-header d-flex justify-content-between">
+        <div>
+            <strong>فرستنده:</strong> {{ message.name }}<br>
+            <strong>ایمیل:</strong> {{ message.email }}
+        </div>
+        <div class="text-muted">
+            {{ message.created_date|jformat:"%Y/%m/%d - %H:%M" }}
+        </div>
+    </div>
+    <div class="card-body">
+        <p><strong>موضوع:</strong> {{ message.subject|default:"بدون موضوع" }}</p>
+        <hr>
+        <p class="text-break" style="white-space: pre-line;">{{ message.message }}</p>
+    </div>
+
+    <div class="card-footer d-flex justify-content-between">
+        <div>
+            {% if replies %}
+            <span class="badge bg-success">پاسخ داده شده ({{ replies.count }})</span>
+            {% else %}
+            <span class="badge bg-warning">بدون پاسخ</span>
+            {% endif %}
+        </div>
+        <div>
+            <a href="{% url 'contact_delete' message.pk %}" class="btn btn-sm btn-danger">حذف پیام</a>
+            <a href="{% url 'messages_list' %}" class="btn btn-sm btn-secondary">بازگشت</a>
+        </div>
+    </div>
+    <hr>
+    <h5 class="text-success mb-3">پاسخ‌های ثبت‌ شده:</h5>
+    {% for reply in replies %}
+    <div class="mb-3 p-3 bg-light border rounded d-flex justify-content-between align-items-start">
+        <div>
+            <p class="text-break" style="white-space: pre-line;">{{ reply.reply_text }}</p>
+            <div class="text-muted small">
+                در تاریخ : {{ reply.replied_at|jformat:"%Y/%m/%d - %H:%M" }} |
+                توسط : {{ reply.replied_by.username }}
+            </div>
+        </div>
+        <div>
+            <!-- دکمه حذف -->
+            <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal"
+                data-bs-target="#deleteModal{{ reply.id }}" title="حذف پاسخ">
+                <i class="fa fa-trash"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- مودال تایید حذف -->
+    <div class="modal fade" id="deleteModal{{ reply.id }}" tabindex="-1"
+        aria-labelledby="deleteModalLabel{{ reply.id }}" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <form method="post" action="{% url 'reply_delete' reply.id %}">
+                    {% csrf_token %}
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="deleteModalLabel{{ reply.id }}">تایید حذف پاسخ</h5>
+                    </div>
+                    <div class="modal-body">
+                        آیا مطمئن هستید که می‌خواهید این پاسخ را حذف کنید؟
+                        <p class="mt-2 p-2 bg-light border rounded text-break" style="white-space: pre-line;">{{reply.reply_text }}</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-danger">حذف</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">انصراف</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <p class="text-muted">هیچ پاسخی ثبت نشده است.</p>
+    {% endfor %}
+    <hr>
+
+    <h5 class="text-info mt-4">ارسال پاسخ جدید:</h5>
+    <form method="post" novalidate>
+        {% csrf_token %}
+        {{ form.as_p }}
+        <div class="text-center my-3">
+            <button type="submit" class="btn btn-primary">ارسال پاسخ</button>
+        </div>
+    </form>
+</div>
+{% endblock %}
