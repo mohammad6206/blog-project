@@ -1,4 +1,3 @@
-
 from django.contrib.sessions.models import Session
 from django.utils.timezone import now
 from django.shortcuts import render, redirect,get_object_or_404
@@ -13,6 +12,9 @@ from dashboard.decorator import superuser_required
 from dashboard.forms import *
 import jdatetime
 from django.contrib.admin.views.decorators import staff_member_required
+from django.core.mail import EmailMultiAlternatives
+from django.template.loader import render_to_string
+
 
 # Create your views here.
 
@@ -217,12 +219,10 @@ def messages_list(request):
     })
 
 
-
-
-@superuser_required
+@superuser_required  
 def contact_message_detail(request, pk):
     message = get_object_or_404(ContactMessage, pk=pk)
-    replies = message.replies.all().order_by('-replied_at') 
+    replies = message.replies.all().order_by('-replied_at')
     form = ContactReplyForm()
 
     if request.method == 'POST':
@@ -232,10 +232,38 @@ def contact_message_detail(request, pk):
             reply.message = message
             reply.replied_by = request.user
             reply.save()
-            messages.success(request, "پاسخ با موفقیت ثبت شد.")
+
+            context = {
+                'name': message.name,
+                'subject': message.subject or 'بدون موضوع',
+                'reply_text': reply.reply_text,
+            }
+
+            html_content = render_to_string('dashboard/replay_notification.html', context)
+            text_content = f"""سلام {message.name} عزیز
+
+شما پیامی برای ما ارسال کرده بودید با موضوع: {context['subject']}
+
+پاسخ مدیریت سایت:
+{reply.reply_text}
+
+با تشکر،
+تیم پشتیبانی Travela
+"""
+
+            email = EmailMultiAlternatives(
+                subject='پاسخ به پیام شما',
+                body=text_content,
+                from_email=settings.DEFAULT_FROM_EMAIL,
+                to=[message.email],
+            )
+            email.attach_alternative(html_content, "text/html")
+            email.send()
+
+            messages.success(request, "پاسخ با موفقیت ثبت و ایمیل ارسال شد.")
             return redirect('contact_message_detail', pk=pk)
         else:
-            messages.success(request, "لطفاً خطاهای فرم را بررسی کنید.", extra_tags='reply')
+            messages.error(request, "لطفاً خطاهای فرم را بررسی کنید.")
 
     return render(request, 'dashboard/contact_message_detail.html', {
         'message': message,
@@ -472,3 +500,5 @@ def deactivate_user(request, pk):
     user.save()
     messages.success(request, 'کاربر غیرفعال شد.')
     return redirect('users_list')
+
+

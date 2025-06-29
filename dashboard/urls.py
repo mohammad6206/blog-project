@@ -27,8 +27,8 @@ urlpatterns = [
     path('users/<int:pk>/delete/', views.delete_user, name='users_delete'),
     path('users/<int:pk>/activate/', views.activate_user, name='users_activate'),
     path('users/<int:pk>/deactivate/', views.deactivate_user, name='users_deactivate'),
-    path('login/', views.login_view, name='login'),
-    path('logout/', views.logout_view, name='logout'),
+    path('login/',views.login_view, name='login'),
+    path('logout/',views.logout_view, name='logout'),
 
 ]
-handler403 = 'myapp.views.permission_denied_view'
+handler403 = 'dashboard.views.permission_denied_view'

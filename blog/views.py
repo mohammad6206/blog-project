@@ -28,6 +28,14 @@ def about_View(request):
 
 
 
+
+def permission_denied_view(request, exception):
+    return render(request, '403.html', status=403)
+
+
+
+
+
 def blog_view(request):
     posts = Post.objects.filter(published_date__lte=timezone.now(), status=True).order_by('-published_date')
 

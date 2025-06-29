@@ -18,6 +18,13 @@ def get_client_ip(request):
 
 
 
+
+def permission_denied_view(request, exception):
+    return render(request, '403.html', status=403)
+
+
+
+
 def login_view(request):
     if request.user.is_authenticated:
         return redirect('blog:index')

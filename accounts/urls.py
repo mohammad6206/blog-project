@@ -15,3 +15,6 @@ urlpatterns = [
     path('reset/<uidb64>/<token>/',auth_views.PasswordResetConfirmView.as_view(template_name='accounts/password_reset_confirm.html',success_url=reverse_lazy('accounts:password_reset_complete')),name='password_reset_confirm'),    
     path('reset/done/',views.CustomPasswordResetCompleteView.as_view(),name='password_reset_complete'),
 ]
+
+
+handler403 = 'accounts.views.permission_denied_view'

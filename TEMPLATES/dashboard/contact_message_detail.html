@@ -1,7 +1,6 @@
 {% extends 'dashboard/base.html' %}
 {% load jformat %}
 
-
 {% block title %}جزئیات پیام{% endblock %}
 {% block header %}مشاهده پیام{% endblock %}
 
@@ -36,59 +35,68 @@
         </div>
     </div>
     <hr>
-    <h5 class="text-success mb-3">پاسخ‌های ثبت‌ شده:</h5>
-    {% for reply in replies %}
-    <div class="mb-3 p-3 bg-light border rounded d-flex justify-content-between align-items-start">
-        <div>
-            <p class="text-break" style="white-space: pre-line;">{{ reply.reply_text }}</p>
-            <div class="text-muted small">
-                در تاریخ : {{ reply.replied_at|jformat:"%Y/%m/%d - %H:%M" }} |
-                توسط : {{ reply.replied_by.username }}
-            </div>
-        </div>
-        <div>
-            <!-- دکمه حذف -->
-            <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal"
-                data-bs-target="#deleteModal{{ reply.id }}" title="حذف پاسخ">
-                <i class="fa fa-trash"></i>
-            </button>
-        </div>
-    </div>
 
-    <!-- مودال تایید حذف -->
-    <div class="modal fade" id="deleteModal{{ reply.id }}" tabindex="-1"
-        aria-labelledby="deleteModalLabel{{ reply.id }}" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <form method="post" action="{% url 'reply_delete' reply.id %}">
-                    {% csrf_token %}
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="deleteModalLabel{{ reply.id }}">تایید حذف پاسخ</h5>
-                    </div>
-                    <div class="modal-body">
-                        آیا مطمئن هستید که می‌خواهید این پاسخ را حذف کنید؟
-                        <p class="mt-2 p-2 bg-light border rounded text-break" style="white-space: pre-line;">{{reply.reply_text }}</p>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="submit" class="btn btn-danger">حذف</button>
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">انصراف</button>
-                    </div>
-                </form>
-            </div>
+    <h5 class="text-success mb-3">پاسخ‌های ثبت‌شده:</h5>
+    {% if replies %}
+    {% for reply in replies %}
+    <div class="mb-3 p-3 bg-light border rounded">
+        <p class="text-break" style="white-space: pre-line;">{{ reply.reply_text }}</p>
+        <div class="text-muted small">
+            در تاریخ : {{ reply.replied_at|jformat:"%Y/%m/%d - %H:%M" }} |
+            توسط : {{ reply.replied_by.username }}
         </div>
     </div>
-    {% empty %}
-    <p class="text-muted">هیچ پاسخی ثبت نشده است.</p>
     {% endfor %}
+    {% else %}
+    <p class="text-muted">هیچ پاسخی ثبت نشده است.</p>
+    {% endif %}
     <hr>
 
     <h5 class="text-info mt-4">ارسال پاسخ جدید:</h5>
-    <form method="post" novalidate>
+    <form id="reply-form" method="post" action="{% url 'contact_message_detail' message.pk %}" novalidate>
         {% csrf_token %}
         {{ form.as_p }}
         <div class="text-center my-3">
-            <button type="submit" class="btn btn-primary">ارسال پاسخ</button>
+            <!-- دکمه برای باز کردن مودال -->
+            <button type="button" id="open-confirm-modal" class="btn btn-primary" data-bs-toggle="modal"
+                data-bs-target="#confirmReplyModal" disabled>
+                ارسال پاسخ
+            </button>
         </div>
     </form>
+
+    <!-- Modal تایید ارسال -->
+    <div class="modal fade" id="confirmReplyModal" tabindex="-1" aria-labelledby="confirmReplyModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title text-danger" id="confirmReplyModalLabel">تأیید ارسال پاسخ</h5>
+                </div>
+                <div class="modal-body">
+                    آیا مطمئن هستید که این پاسخ برای کاربر ایمیل شود؟
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">انصراف</button>
+                    <!-- این دکمه فرم رو ارسال میکنه -->
+                    <button type="submit" form="reply-form" class="btn btn-danger" id="confirm-reply-submit">بله، ارسال
+                        شود</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const replyForm = document.getElementById('reply-form');
+        const openModalBtn = document.getElementById('open-confirm-modal');
+
+        function checkFormInput() {
+            const replyText = replyForm.querySelector('textarea[name="reply_text"]');
+            openModalBtn.disabled = !(replyText && replyText.value.trim().length > 0);
+        }
+
+        replyForm.addEventListener('input', checkFormInput);
+        window.addEventListener('load', checkFormInput);
+    </script>
 </div>
 {% endblock %}

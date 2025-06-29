@@ -14,3 +14,5 @@ urlpatterns = [
     path('package/<int:id>/', views.package_detail, name='package_detail'),
     path('services', views.services_View, name='services'),
 ]
+
+handler403 = 'blog.views.permission_denied_view'

@@ -3,14 +3,19 @@ from django.contrib.auth import authenticate
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from blog.models import CustomUser
+
+
 class CustomUserCreationForm(UserCreationForm):
+    username = forms.CharField(required=True)
+    first_name = forms.CharField(required=True)
+    last_name = forms.CharField(required=True)
     email = forms.EmailField(required=True)
+    password1 = forms.CharField(required=True, widget=forms.PasswordInput)
+    password2 = forms.CharField(required=True, widget=forms.PasswordInput)
 
     class Meta:
         model = CustomUser
-        fields = ("username","first_name", "last_name", "email", "password1", "password2")
-
-
+        fields = ("username", "first_name", "last_name", "email", "password1", "password2")
 
 
 

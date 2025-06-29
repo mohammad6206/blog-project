@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>پاسخ به پیام شما</title>
+</head>
+<body style="font-family: Tahoma, sans-serif; background-color: #f0f0f0; padding: 30px;">
+    <div style="max-width: 600px; margin: auto; background-color: #ffffff; padding: 30px; border-radius: 8px; direction: rtl; text-align: right; line-height: 1.8;">
+        <h2 style="color: #2c3e50; margin-bottom: 20px;">پاسخ به پیام شما</h2>
+        <p>سلام {{ name }} عزیز،</p>
+        <p>شما پیامی برای ما ارسال کرده بودید با موضوع: <strong>{{ subject }}</strong></p>
+        <p>پاسخی که از طرف مدیریت سایت برای شما ارسال شده به شرح زیر است:</p>
+        <blockquote style="border-right: 4px solid #3498db; padding-right: 15px; margin: 20px 0; background-color: #f9f9f9; color: #333;">
+            {{ reply_text|linebreaks }}
+        </blockquote>
+        <p style="margin-top: 30px;">با تشکر،<br> <strong>تیم پشتیبانی Travela</strong></p>
+    </div>
+</body>
+</html>
