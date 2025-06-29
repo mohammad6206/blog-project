@@ -22,11 +22,7 @@ from django.urls import path, re_path
 from django.shortcuts import render
 from django.contrib import admin
 
-urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('', include('blog.urls')),
-    path('accounts/', include('accounts.urls')), 
-]
+
 
 if settings.SITE_MAINTENANCE:
     urlpatterns=[
