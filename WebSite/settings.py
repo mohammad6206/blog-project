@@ -15,6 +15,26 @@ from pathlib import Path
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+from decouple import config
+
+# SECURITY WARNING: keep the secret key used in production secret!
+SECRET_KEY=config('SECRET_KEY')
+
+# SECURITY WARNING: don't run with debug turned on in production!
+
+DEBUG =config('DEBUG', cast=bool, default=False)
+
+
+from decouple import config, Csv
+
+# مقدار ALLOWED_HOSTS از .env می‌گیرد (به صورت CSV)
+_env_hosts = config("ALLOWED_HOSTS", default="127.0.0.1,localhost,127.0.0.1:8000", cast=Csv())
+
+# اگر مقدار "*" باشد → همه هاست‌ها مجاز هستند
+if len(_env_hosts) == 1 and _env_hosts[0].strip() == "*":
+    ALLOWED_HOSTS = ["*"]
+else:
+    ALLOWED_HOSTS = [host.strip() for host in _env_hosts if host.strip()]
 
 
 
@@ -85,6 +105,35 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+
+import os
+
+if DEBUG:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.mysql",
+            "NAME": "blog-database",
+            "USER": "root",
+            "PASSWORD": "@Mokhtari1382",
+            "HOST": "localhost",
+            "PORT": "3306",
+        }
+    }
+else:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.mysql",
+            "NAME": config("DB_NAME"),
+            "USER": config("DB_USER"),
+            "PASSWORD": config("DB_PASSWORD"),
+            "HOST": config("DB_HOST", default="localhost"),
+            "PORT": config("DB_PORT", default="3306"),
+            "OPTIONS": {
+                "charset": "utf8mb4",
+                "init_command": "SET NAMES 'utf8mb4' COLLATE 'utf8mb4_unicode_ci'"
+            },
+        }
+    }
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.2/topics/i18n/
