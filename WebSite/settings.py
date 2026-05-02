@@ -154,6 +154,16 @@ AUTH_USER_MODEL = 'blog.CustomUser'
 STATIC_URL = '/static/'
 MEDIA_URL = '/media/'
 
+
+STATIC_ROOT = BASE_DIR / "static"
+MEDIA_ROOT = BASE_DIR / 'media'
+
+STATICFILES_DIRS = [
+    BASE_DIR / "STATICS"
+    ]
+
+
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
@@ -164,6 +174,39 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 #برای حالت تعمیرات
 SITE_MAINTENANCE= False 
 
+
+
+if DEBUG == True :
+    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+
+
+
+if DEBUG == False :
+    EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+    EMAIL_HOST = 'smtp.gmail.com'
+    EMAIL_PORT = 587
+    EMAIL_USE_TLS = True
+    EMAIL_HOST_USER = 'mysite.blog.post@gmail.com'
+    EMAIL_HOST_PASSWORD = 'kipevawpylklefkk'  
+    DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+
+
+
+if DEBUG == False:
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+    SECURE_SSL_REDIRECT = True
+
+    SECURE_HSTS_SECONDS = 31536000  # 1 year
+    SECURE_HSTS_PRELOAD = True
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+    SECURE_CONTENT_TYPE_NOSNIFF = True
+    SECURE_BROWSER_XSS_FILTER = True
+    X_FRAME_OPTIONS = "SAMEORIGIN"
+    SECURE_REFERRER_POLICY = "strict-origin"
+    USE_X_FORWARDED_HOST = True
+    SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
 
 
