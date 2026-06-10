@@ -151,7 +151,7 @@ address: http://127.0.0.1:8000/dashboard
 
 ![Services](screenshots/services.png)
 
-**Your Name**
+**Mohammad Mehdi Mokhtari**
 
 Full-stack Web Developer | Django & React
 
